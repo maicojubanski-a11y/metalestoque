@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Scorecard de Piloto — MetalEstoque PRO</title>
+  <style>
+    :root { --bg:#07111f; --panel:#102039; --panel2:#142a47; --text:#eef7ff; --muted:#9db1c9; --line:rgba(157,177,201,.2); --cyan:#25d6f5; --green:#34d399; --amber:#fbbf24; --rose:#fb7185; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:radial-gradient(circle at 12% 0%,rgba(37,214,245,.12),transparent 32rem),var(--bg); color:var(--text); font:14px/1.5 Inter,system-ui,-apple-system,"Segoe UI",sans-serif; }
+    .wrap { width:min(1120px,calc(100% - 32px)); margin:0 auto; }
+    header { padding:28px 0 18px; border-bottom:1px solid var(--line); }
+    .head { display:flex; justify-content:space-between; align-items:flex-start; gap:18px; }
+    h1,h2,h3,p { margin-top:0; }
+    h1 { margin-bottom:6px; font-size:clamp(27px,4vw,42px); line-height:1.05; letter-spacing:-.045em; }
+    h2 { margin-bottom:15px; font-size:20px; }
+    h3 { margin:0 0 6px; font-size:16px; }
+    .sub,.hint { color:var(--muted); }
+    .sub { margin:0; max-width:720px; }
+    .badge { display:inline-flex; padding:6px 10px; border:1px solid rgba(37,214,245,.3); border-radius:999px; color:#a9f5ff; background:rgba(37,214,245,.08); font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.05em; }
+    main { padding:24px 0 50px; }
+    .card { padding:21px; margin-bottom:18px; border:1px solid var(--line); border-radius:15px; background:rgba(16,32,57,.76); }
+    .grid2,.grid3 { display:grid; gap:14px; }
+    .grid2 { grid-template-columns:repeat(2,1fr); }
+    .grid3 { grid-template-columns:repeat(3,1fr); }
+    label { display:grid; gap:6px; color:#c9d8e8; font-size:12px; font-weight:800; }
+    input,select,textarea { width:100%; padding:10px 11px; color:var(--text); background:#091525; border:1px solid var(--line); border-radius:8px; outline:0; font:inherit; }
+    input:focus,select:focus,textarea:focus { border-color:var(--cyan); box-shadow:0 0 0 3px rgba(37,214,245,.1); }
+    textarea { min-height:70px; resize:vertical; }
+    .table-wrap { overflow:auto; }
+    table { width:100%; min-width:780px; border-collapse:collapse; }
+    th,td { padding:10px 8px; border-bottom:1px solid var(--line); text-align:left; vertical-align:middle; }
+    th { color:#b8cce0; font-size:11px; text-transform:uppercase; letter-spacing:.04em; }
+    td input,td select { min-width:90px; padding:8px; }
+    .btns { display:flex; flex-wrap:wrap; gap:9px; }
+    button,.link-btn { display:inline-flex; align-items:center; justify-content:center; min-height:40px; padding:0 14px; border:1px solid transparent; border-radius:8px; color:#03111b; background:var(--cyan); font:800 13px inherit; cursor:pointer; text-decoration:none; }
+    .secondary { color:var(--text); border-color:var(--line); background:rgba(255,255,255,.04); }
+    .success { color:#052016; background:var(--green); }
+    .warning { color:#251900; background:var(--amber); }
+    .danger { color:#2a0710; background:var(--rose); }
+    .results { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-top:15px; }
+    .result { padding:15px; border:1px solid var(--line); border-radius:10px; background:rgba(255,255,255,.035); }
+    .result strong { display:block; margin-bottom:3px; font-size:24px; }
+    .result small { color:var(--muted); }
+    #decision { margin-top:15px; padding:13px 15px; border-left:3px solid var(--amber); border-radius:0 8px 8px 0; background:rgba(251,191,36,.09); }
+    #decision.good { border-color:var(--green); background:rgba(52,211,153,.09); }
+    #decision.bad { border-color:var(--rose); background:rgba(251,113,133,.09); }
+    .foot { display:flex; justify-content:space-between; gap:15px; color:var(--muted); font-size:12px; }
+    @media(max-width:760px) { .head,.foot { flex-direction:column; } .grid2,.grid3,.results { grid-template-columns:1fr; } }
+    @media print { body { background:#fff; color:#111; } .card { border:1px solid #bbb; background:#fff; } .no-print { display:none!important; } input,select,textarea { color:#111; background:#fff; border-color:#999; } .hint,.sub { color:#444; } }
+  </style>
+</head>
+<body>
+  <header><div class="wrap head"><div><span class="badge">Piloto comercial · 30 dias</span><h1>Scorecard de resultado</h1><p class="sub">Registre baseline, uso observado e impacto financeiro. Este documento separa hipótese de evidência e gera um resumo para a decisão do cliente.</p></div><div class="btns no-print"><a class="link-btn secondary" href="vendas.html">Página comercial</a><a class="link-btn secondary" href="index.html">Abrir demo</a></div></div></header>
+  <main class="wrap">
+    <section class="card"><h2>1. Identificação do piloto</h2><div class="grid3"><label>Empresa<input id="company" placeholder="Nome da fábrica"></label><label>Responsável comprador<input id="buyer" placeholder="Nome e cargo"></label><label>Champion operacional<input id="champion" placeholder="Almoxarife / PCP"></label></div><div class="grid3" style="margin-top:14px"><label>Data inicial<input id="startDate" type="date"></label><label>Data final<input id="endDate" type="date"></label><label>Célula avaliada<input id="cell" placeholder="Ex.: almoxarifado da caldeiraria"></label></div></section>
+    <section class="card"><h2>2. Baseline e resultado</h2><p class="hint">Preencha com dados observados, não estimativas. O cálculo usa o valor “depois” para classificar o piloto.</p><div class="grid3"><label>Localizar item — antes (s)<input id="locBefore" type="number" min="0" step="any"></label><label>Localizar item — depois (s)<input id="locAfter" type="number" min="0" step="any"></label><label>Inventário por item — depois (s)<input id="countAfter" type="number" min="0" step="any"></label></div><div class="grid3" style="margin-top:14px"><label>Acuracidade física — antes (%)<input id="accuracyBefore" type="number" min="0" max="100" step="any"></label><label>Acuracidade física — depois (%)<input id="accuracyAfter" type="number" min="0" max="100" step="any"></label><label>Movimentos registrados — depois (%)<input id="movementRate" type="number" min="0" max="100" step="any"></label></div><div class="grid3" style="margin-top:14px"><label>Horas poupadas por mês<input id="hoursSaved" type="number" min="0" step="any"></label><label>Custo médio da hora (R$)<input id="hourCost" type="number" min="0" step="any" value="50"></label><label>Compras/perdas evitadas por mês (R$)<input id="avoidedCost" type="number" min="0" step="any"></label></div></section>
+    <section class="card"><h2>3. Fluxos observados</h2><p class="hint">Use uma linha para cada fluxo executado com usuário real. “Sem ajuda” deve ser marcado somente quando o observador não precisou conduzir.</p><div class="table-wrap"><table><thead><tr><th>Fluxo</th><th>Tempo (s)</th><th>Sem ajuda?</th><th>Facilidade (1–5)</th><th>Observação</th></tr></thead><tbody id="flowRows"></tbody></table></div></section>
+    <section class="card"><h2>4. Decisão</h2><div class="grid2"><label>Valor de retalho reaproveitado no piloto (R$)<input id="scrapValue" type="number" min="0" step="any"></label><label>Taxa do piloto (R$)<input id="pilotFee" type="number" min="0" step="any" value="3900"></label></div><div class="btns no-print" style="margin-top:16px"><button class="success" type="button" id="calculate">Calcular resultado</button><button class="secondary" type="button" id="copySummary">Copiar resumo executivo</button><button class="secondary" type="button" id="exportJson">Exportar JSON</button><button class="warning" type="button" onclick="window.print()">Imprimir / PDF</button><button class="danger" type="button" id="clearForm">Nova ficha</button></div><div class="results"><div class="result"><strong id="resultTasks">—</strong><small>Tarefas sem ajuda</small></div><div class="result"><strong id="resultLocate">—</strong><small>Redução ao localizar</small></div><div class="result"><strong id="resultMonthly">—</strong><small>Benefício mensal estimado</small></div><div class="result"><strong id="resultPayback">—</strong><small>Payback do piloto</small></div></div><div id="decision">Ainda não calculado. Registre os dados e clique em “Calcular resultado”.</div><textarea id="summary" class="no-print" style="margin-top:15px;display:none" readonly></textarea></section>
+    <div class="foot"><span>MetalEstoque PRO · scorecard local, sem envio automático de dados.</span><span>Critérios iniciais: ≥80% sem ajuda · ≥95% acuracidade · ≥90% movimentos.</span></div>
+  </main>
+  <script>
+    const FLOW_NAMES = ["Importação e busca", "Recebimento com NF/corrida", "Retalho vinculado à OP", "Baixa de BOM", "Inventário por SKU"];
+    const STORAGE_KEY = "metalestoque_pilot_scorecard_v1";
+    const $ = id => document.getElementById(id);
+    const money = value => new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(Number(value) || 0);
+    const num = id => Number($(id).value) || 0;
+    const flowRows = $("flowRows");
+    FLOW_NAMES.forEach((name, index) => {
+      const row = document.createElement("tr");
+      row.innerHTML = "<td><strong>" + name + "</strong></td>" +
+        "<td><input id='flow-time-" + index + "' type='number' min='0' step='any'></td>" +
+        "<td><select id='flow-help-" + index + "'><option value='yes'>Sim</option><option value='no'>Não</option></select></td>" +
+        "<td><select id='flow-rating-" + index + "'><option>5</option><option>4</option><option>3</option><option>2</option><option>1</option></select></td>" +
+        "<td><input id='flow-note-" + index + "' placeholder='Dúvida, erro ou comentário'></td>";
+      flowRows.appendChild(row);
+    });
+    function collect() {
+      const flows = FLOW_NAMES.map((name, index) => ({ name, seconds: num("flow-time-" + index), help: $("flow-help-" + index)?.value || "yes", rating: Number($("flow-rating-" + index)?.value || 0), note: $("flow-note-" + index)?.value || "" }));
+      return { company: $("company").value, buyer: $("buyer").value, champion: $("champion").value, startDate: $("startDate").value, endDate: $("endDate").value, cell: $("cell").value, locBefore: num("locBefore"), locAfter: num("locAfter"), countAfter: num("countAfter"), accuracyBefore: num("accuracyBefore"), accuracyAfter: num("accuracyAfter"), movementRate: num("movementRate"), hoursSaved: num("hoursSaved"), hourCost: num("hourCost"), avoidedCost: num("avoidedCost"), scrapValue: num("scrapValue"), pilotFee: num("pilotFee"), flows, savedAt: new Date().toISOString() };
+    }
+    function apply(data) {
+      Object.keys(data || {}).forEach(key => { if ($(key) && typeof data[key] !== "object") $(key).value = data[key]; });
+      (data?.flows || []).forEach((flow, index) => { const time = $("flow-time-" + index), help = $("flow-help-" + index), rating = $("flow-rating-" + index), note = $("flow-note-" + index); if (time) time.value = flow.seconds || ""; if (help) help.value = flow.help || "yes"; if (rating) rating.value = flow.rating || 5; if (note) note.value = flow.note || ""; });
+    }
+    function calculate() {
+      const data = collect();
+      const completed = data.flows.filter(flow => flow.seconds > 0);
+      const withoutHelp = completed.filter(flow => flow.help === "yes").length;
+      const taskRate = completed.length ? withoutHelp / completed.length * 100 : 0;
+      const locateReduction = data.locBefore > 0 ? Math.max(0, (data.locBefore - data.locAfter) / data.locBefore * 100) : 0;
+      const monthlyBenefit = data.hoursSaved * data.hourCost + data.avoidedCost + data.scrapValue;
+      const payback = monthlyBenefit > 0 ? data.pilotFee / monthlyBenefit : 0;
+      $("resultTasks").textContent = completed.length ? Math.round(taskRate) + "%" : "—";
+      $("resultLocate").textContent = data.locBefore > 0 ? Math.round(locateReduction) + "%" : "—";
+      $("resultMonthly").textContent = monthlyBenefit > 0 ? money(monthlyBenefit) : "—";
+      $("resultPayback").textContent = payback > 0 ? payback.toFixed(1) + " meses" : "—";
+      const good = taskRate >= 80 && data.accuracyAfter >= 95 && data.movementRate >= 90 && monthlyBenefit >= data.pilotFee;
+      const decision = $("decision");
+      decision.className = good ? "good" : "bad";
+      decision.textContent = good ? "Sinal de conversão: os critérios iniciais foram atingidos. Validar com comprador, ROI e escopo do contrato." : "Ainda não há evidência suficiente para converter automaticamente. Investigue a causa, repita o fluxo ou ajuste o escopo.";
+      const summary = ["SCORECARD METALESTOQUE PRO", "Empresa: " + (data.company || "não informada"), "Célula: " + (data.cell || "não informada"), "Tarefas sem ajuda: " + Math.round(taskRate) + "%", "Acuracidade depois: " + data.accuracyAfter + "%", "Movimentos registrados: " + data.movementRate + "%", "Benefício mensal estimado: " + money(monthlyBenefit), "Payback do piloto: " + (payback ? payback.toFixed(1) + " meses" : "não calculado"), "Decisão preliminar: " + (good ? "avançar para proposta" : "investigar e repetir")].join("\n");
+      $("summary").value = summary; $("summary").style.display = "block";
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+      return { data, summary, good };
+    }
+    function download(name, content, type) { const blob = new Blob([content], { type }); const link = document.createElement("a"); link.href = URL.createObjectURL(blob); link.download = name; link.click(); setTimeout(() => URL.revokeObjectURL(link.href), 1000); }
+    $("calculate").addEventListener("click", calculate);
+    $("copySummary").addEventListener("click", async () => { const result = calculate(); try { await navigator.clipboard.writeText(result.summary); alert("Resumo copiado para a área de transferência."); } catch (error) { $("summary").style.display = "block"; $("summary").focus(); $("summary").select(); alert("Selecione e copie o resumo exibido."); } });
+    $("exportJson").addEventListener("click", () => download("scorecard_metalestoque_piloto.json", JSON.stringify(collect(), null, 2), "application/json"));
+    $("clearForm").addEventListener("click", () => { if (confirm("Limpar a ficha atual?")) { localStorage.removeItem(STORAGE_KEY); location.reload(); } });
+    try { apply(JSON.parse(localStorage.getItem(STORAGE_KEY) || "null")); } catch (error) { localStorage.removeItem(STORAGE_KEY); }
+    $("startDate").value ||= new Date().toISOString().slice(0, 10);
+  </script>
+</body>
+</html>

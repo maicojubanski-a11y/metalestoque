@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ficha de Avaliação de Teste com Usuários - MetalEstoque PRO</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card: #1e293b;
+      --border: #334155;
+      --text: #f8fafc;
+      --muted: #94a3b8;
+      --cyan: #06b6d4;
+      --amber: #f59e0b;
+      --emerald: #10b981;
+      --rose: #f43f5e;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background: var(--bg); color: var(--text); padding: 24px; line-height: 1.5; }
+    .container { max-width: 960px; margin: 0 auto; }
+
+    header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--border); padding-bottom: 16px; margin-bottom: 24px; }
+    .brand { display: flex; align-items: center; gap: 12px; }
+    .brand-title { font-size: 20px; font-weight: 800; color: var(--cyan); }
+    .brand-sub { font-size: 13px; color: var(--muted); }
+
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 20px; margin-bottom: 20px; }
+    .card-title { font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; }
+
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+
+    label { font-size: 12.5px; font-weight: 600; color: var(--muted); display: block; margin-bottom: 4px; }
+    input, select, textarea { width: 100%; background: #0b1120; border: 1px solid var(--border); color: var(--text); padding: 8px 12px; border-radius: 6px; font-size: 13px; }
+    input:focus, select:focus, textarea:focus { outline: none; border-color: var(--cyan); }
+
+    /* Timer Widget */
+    .timer-widget { background: rgba(6, 182, 212, 0.1); border: 1px solid rgba(6, 182, 212, 0.3); border-radius: 8px; padding: 12px; display: flex; align-items: center; justify-content: space-between; }
+    .timer-display { font-family: monospace; font-size: 24px; font-weight: 800; color: var(--cyan); }
+    .btn { background: var(--cyan); color: #fff; border: none; padding: 8px 16px; border-radius: 6px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; font-size: 13px; }
+    .btn:hover { opacity: 0.9; }
+    .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text); }
+    .btn-outline:hover { background: var(--border); }
+    .btn-sm { padding: 4px 10px; font-size: 12px; }
+
+    /* Scenario Box */
+    .scenario-box { border-left: 4px solid var(--cyan); background: #162032; border-radius: 8px; padding: 16px; margin-bottom: 16px; }
+    .scenario-header { display: flex; justify-content: space-between; margin-bottom: 8px; }
+    .scenario-title { font-size: 15px; font-weight: 700; color: var(--cyan); }
+    .scenario-persona { font-size: 12px; background: rgba(245, 158, 11, 0.2); color: var(--amber); padding: 2px 8px; border-radius: 4px; font-weight: 600; }
+    .steps-list { font-size: 13px; margin: 8px 0 12px 18px; color: var(--muted); }
+    .steps-list li { margin-bottom: 4px; }
+
+    .rating-row { display: flex; gap: 16px; align-items: center; background: #0b1120; padding: 10px 14px; border-radius: 6px; margin-top: 10px; }
+    .star-select { max-width: 140px; }
+
+    @media print {
+      body { background: #fff !important; color: #000 !important; padding: 0; }
+      .no-print { display: none !important; }
+      .card, .scenario-box { border: 1px solid #ccc !important; background: #fff !important; color: #000 !important; break-inside: avoid; }
+      input, select, textarea { border: 1px solid #999 !important; background: #fff !important; color: #000 !important; }
+      .rating-row { background: #f5f5f5 !important; }
+      .scenario-title { color: #000 !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <header>
+      <div class="brand">
+        <div>
+          <div class="brand-title">MetalEstoque PRO - Ficha de Avaliação de Usabilidade</div>
+          <div class="brand-sub">Protocolo de Teste Prático com Humanos no Chão de Fábrica</div>
+        </div>
+      </div>
+      <div class="no-print" style="display: flex; gap: 10px;">
+        <button class="btn btn-outline" onclick="window.print()">🖨️ Imprimir / Salvar PDF</button>
+        <button class="btn" onclick="limparFicha()">🔄 Nova Sessão</button>
+      </div>
+    </header>
+
+    <!-- IDENTIFICAÇÃO DA SESSÃO -->
+    <div class="card">
+      <div class="card-title">👤 Identificação do Participante e da Sessão</div>
+      <div class="grid-3">
+        <div>
+          <label>Nome do Testador (Usuário):</label>
+          <input type="text" id="partNome" placeholder="ex: Seu Valdir (Almoxarife)">
+        </div>
+        <div>
+          <label>Cargo / Função na Metalúrgica:</label>
+          <select id="partCargo">
+            <option value="almoxarife">Almoxarife / Estoquista</option>
+            <option value="caldeireiro">Caldeireiro / Soldador</option>
+            <option value="encarregado">Encarregado de Produção</option>
+            <option value="comprador">Comprador / PCP</option>
+            <option value="gerente">Gerente Geral / Dono</option>
+          </select>
+        </div>
+        <div>
+          <label>Empresa Metalúrgica:</label>
+          <input type="text" id="partEmpresa" placeholder="ex: Caldeiraria União">
+        </div>
+      </div>
+
+      <div class="grid-2" style="margin-top: 14px;">
+        <div>
+          <label>Data e Hora do Teste:</label>
+          <input type="datetime-local" id="partData">
+        </div>
+        <div>
+          <label>Avaliador / Observador:</label>
+          <input type="text" id="partAvaliador" placeholder="Seu nome">
+        </div>
+      </div>
+    </div>
+
+    <!-- CRONÔMETRO DE TAREFAS -->
+    <div class="card no-print">
+      <div class="card-title">⏱️ Cronômetro de Medição de Tempo da Tarefa</div>
+      <div class="timer-widget">
+        <div>
+          <div style="font-size: 12px; color: var(--muted);">Tempo decorrido na tarefa atual:</div>
+          <div class="timer-display" id="timerDisplay">00:00</div>
+        </div>
+        <div style="display: flex; gap: 8px;">
+          <button class="btn btn-sm" onclick="startTimer()">▶ Iniciar Tarefa</button>
+          <button class="btn btn-sm btn-outline" onclick="pauseTimer()">⏸ Pausar</button>
+          <button class="btn btn-sm btn-outline" onclick="resetTimer()">⏹ Zerar</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================================== -->
+    <!-- ROTEIROS DE TESTE -->
+    <!-- ============================================================== -->
+
+    <!-- ROTEIRO 1 -->
+    <div class="scenario-box">
+      <div class="scenario-header">
+        <div class="scenario-title">Roteiro 1: Carga em Massa (3.000 Itens via Planilha)</div>
+        <span class="scenario-persona">Comprador / Implantação</span>
+      </div>
+      <div style="font-size: 13px; color: #cbd5e1; margin-bottom: 6px;">
+        <strong>Missão para o usuário:</strong> Acessar o Almoxarifado, abrir "Importar Planilha", carregar o arquivo com 3.000 modelos e filtrar por um item.
+      </div>
+      <ol class="steps-list">
+        <li>Clicou em "Importar Planilha"?</li>
+        <li>Selecionou o arquivo de teste com 3.000 modelos?</li>
+        <li>Conseguiu usar a busca e paginação de 50 em 50?</li>
+      </ol>
+      <div class="rating-row">
+        <div>
+          <label>Tempo levado:</label>
+          <input type="text" placeholder="ex: 45 seg" style="width: 100px;">
+        </div>
+        <div>
+          <label>Facilidade (1 a 5):</label>
+          <select class="star-select">
+            <option value="5">⭐⭐⭐⭐⭐ 5 - Excelente</option>
+            <option value="4">⭐⭐⭐⭐ 4 - Fácil</option>
+            <option value="3">⭐⭐⭐ 3 - Médio</option>
+            <option value="2">⭐⭐ 2 - Difícil</option>
+            <option value="1">⭐ 1 - Travou</option>
+          </select>
+        </div>
+        <div style="flex: 1;">
+          <label>Observações / Dúvidas do usuário:</label>
+          <input type="text" placeholder="O que ele comentou ou onde hesitou?">
+        </div>
+      </div>
+    </div>
+
+    <!-- ROTEIRO 2 -->
+    <div class="scenario-box">
+      <div class="scenario-header">
+        <div class="scenario-title">Roteiro 2: Entrada com Rastreabilidade de Usina (ISO 9001)</div>
+        <span class="scenario-persona">Almoxarife</span>
+      </div>
+      <div style="font-size: 13px; color: #cbd5e1; margin-bottom: 6px;">
+        <strong>Missão para o usuário:</strong> Dar entrada de 10 Chapas 1020 informando o número da NF-e e imprimir a etiqueta com a corrida da usina.
+      </div>
+      <ol class="steps-list">
+        <li>Achou o botão de Movimentação rápido?</li>
+        <li>Preencheu a quantidade e a NF-e corretamente?</li>
+        <li>A etiqueta gerada foi legível e adequada?</li>
+      </ol>
+      <div class="rating-row">
+        <div>
+          <label>Tempo levado:</label>
+          <input type="text" placeholder="ex: 1 min" style="width: 100px;">
+        </div>
+        <div>
+          <label>Facilidade (1 a 5):</label>
+          <select class="star-select">
+            <option value="5">⭐⭐⭐⭐⭐ 5 - Excelente</option>
+            <option value="4">⭐⭐⭐⭐ 4 - Fácil</option>
+            <option value="3">⭐⭐⭐ 3 - Médio</option>
+            <option value="2">⭐⭐ 2 - Difícil</option>
+            <option value="1">⭐ 1 - Travou</option>
+          </select>
+        </div>
+        <div style="flex: 1;">
+          <label>Observações / Dúvidas do usuário:</label>
+          <input type="text" placeholder="Onde o usuário teve dúvida?">
+        </div>
+      </div>
+    </div>
+
+    <!-- ROTEIRO 3 -->
+    <div class="scenario-box">
+      <div class="scenario-header">
+        <div class="scenario-title">Roteiro 3: Baixa Automática da Lista de Materiais da OP</div>
+        <span class="scenario-persona">Encarregado de Produção</span>
+      </div>
+      <div style="font-size: 13px; color: #cbd5e1; margin-bottom: 6px;">
+        <strong>Missão para o usuário:</strong> Abrir a aba Ordens Produção, localizar o Tanque Metálico e baixar todos os materiais do estoque com 1 clique.
+      </div>
+      <ol class="steps-list">
+        <li>Entendeu o que é a lista de materiais (BOM) da OP?</li>
+        <li>Clicou no botão "Baixar Materiais do Estoque"?</li>
+        <li>Percebeu a atualização do status da OP para "EM PRODUÇÃO"?</li>
+      </ol>
+      <div class="rating-row">
+        <div>
+          <label>Tempo levado:</label>
+          <input type="text" placeholder="ex: 30 seg" style="width: 100px;">
+        </div>
+        <div>
+          <label>Facilidade (1 a 5):</label>
+          <select class="star-select">
+            <option value="5">⭐⭐⭐⭐⭐ 5 - Excelente</option>
+            <option value="4">⭐⭐⭐⭐ 4 - Fácil</option>
+            <option value="3">⭐⭐⭐ 3 - Médio</option>
+            <option value="2">⭐⭐ 2 - Difícil</option>
+            <option value="1">⭐ 1 - Travou</option>
+          </select>
+        </div>
+        <div style="flex: 1;">
+          <label>Observações / Dúvidas do usuário:</label>
+          <input type="text" placeholder="O usuário achou seguro baixar tudo de uma vez?">
+        </div>
+      </div>
+    </div>
+
+    <!-- ROTEIRO 4 -->
+    <div class="scenario-box">
+      <div class="scenario-header">
+        <div class="scenario-title">Roteiro 4: Cadastro e Reúso de Retalhos / Sobras de Chapa</div>
+        <span class="scenario-persona">Caldeireiro / Soldador</span>
+      </div>
+      <div style="font-size: 13px; color: #cbd5e1; margin-bottom: 6px;">
+        <strong>Missão para o usuário:</strong> Cadastrar uma sobra de corte no "Pátio de Sobras" e simular o botão "Utilizar em OP".
+      </div>
+      <ol class="steps-list">
+        <li>Achou a aba "Pátio de Sobras"?</li>
+        <li>Cadastrou as dimensões em milímetros e o peso em kg?</li>
+        <li>Usou o botão "Utilizar em OP" e vinculou à ordem?</li>
+      </ol>
+      <div class="rating-row">
+        <div>
+          <label>Tempo levado:</label>
+          <input type="text" placeholder="ex: 50 seg" style="width: 100px;">
+        </div>
+        <div>
+          <label>Facilidade (1 a 5):</label>
+          <select class="star-select">
+            <option value="5">⭐⭐⭐⭐⭐ 5 - Excelente</option>
+            <option value="4">⭐⭐⭐⭐ 4 - Fácil</option>
+            <option value="3">⭐⭐⭐ 3 - Médio</option>
+            <option value="2">⭐⭐ 2 - Difícil</option>
+            <option value="1">⭐ 1 - Travou</option>
+          </select>
+        </div>
+        <div style="flex: 1;">
+          <label>Observações / Dúvidas do usuário:</label>
+          <input type="text" placeholder="O usuário viu valor em evitar cortar chapa nova?">
+        </div>
+      </div>
+    </div>
+
+    <!-- ROTEIRO 5 -->
+    <div class="scenario-box">
+      <div class="scenario-header">
+        <div class="scenario-title">Roteiro 5: Calculadora Metalmecânica de Engenharia</div>
+        <span class="scenario-persona">Comprador / Orçamentista</span>
+      </div>
+      <div style="font-size: 13px; color: #cbd5e1; margin-bottom: 6px;">
+        <strong>Missão para o usuário:</strong> Calcular o peso em kg de uma chapa de Inox 304 e de 6 metros de tubo redondo Ø 2".
+      </div>
+      <ol class="steps-list">
+        <li>Selecionou a liga correta (Inox / Aço)?</li>
+        <li>O resultado em kg apareceu em tempo real?</li>
+        <li>O usuário achou a calculadora mais prática do que tabelas manuais?</li>
+      </ol>
+      <div class="rating-row">
+        <div>
+          <label>Tempo levado:</label>
+          <input type="text" placeholder="ex: 40 seg" style="width: 100px;">
+        </div>
+        <div>
+          <label>Facilidade (1 a 5):</label>
+          <select class="star-select">
+            <option value="5">⭐⭐⭐⭐⭐ 5 - Excelente</option>
+            <option value="4">⭐⭐⭐⭐ 4 - Fácil</option>
+            <option value="3">⭐⭐⭐ 3 - Médio</option>
+            <option value="2">⭐⭐ 2 - Difícil</option>
+            <option value="1">⭐ 1 - Travou</option>
+          </select>
+        </div>
+        <div style="flex: 1;">
+          <label>Observações / Dúvidas do usuário:</label>
+          <input type="text" placeholder="Faltou algum perfil metálico que ele usa?">
+        </div>
+      </div>
+    </div>
+
+    <!-- ROTEIRO 6 -->
+    <div class="scenario-box">
+      <div class="scenario-header">
+        <div class="scenario-title">Roteiro 6: Inventário Rotativo (Edição em Grade e Bipagem)</div>
+        <span class="scenario-persona">Almoxarife / Auditor</span>
+      </div>
+      <div style="font-size: 13px; color: #cbd5e1; margin-bottom: 6px;">
+        <strong>Missão para o usuário:</strong> Testar o "Modo Edição Rápida" na tabela e o modal de "Contagem Rápida" via código de barras.
+      </div>
+      <ol class="steps-list">
+        <li>Conseguiu editar o saldo e o preço direto nas células?</li>
+        <li>Na contagem rápida, digitou o código, mudou a quantidade e deu Enter?</li>
+        <li>Preferiu a edição em grade ou o modal de bipagem?</li>
+      </ol>
+      <div class="rating-row">
+        <div>
+          <label>Tempo levado:</label>
+          <input type="text" placeholder="ex: 1 min" style="width: 100px;">
+        </div>
+        <div>
+          <label>Facilidade (1 a 5):</label>
+          <select class="star-select">
+            <option value="5">⭐⭐⭐⭐⭐ 5 - Excelente</option>
+            <option value="4">⭐⭐⭐⭐ 4 - Fácil</option>
+            <option value="3">⭐⭐⭐ 3 - Médio</option>
+            <option value="2">⭐⭐ 2 - Difícil</option>
+            <option value="1">⭐ 1 - Travou</option>
+          </select>
+        </div>
+        <div style="flex: 1;">
+          <label>Observações / Dúvidas do usuário:</label>
+          <input type="text" placeholder="Qual método ele achou mais rápido?">
+        </div>
+      </div>
+    </div>
+
+    <!-- FEEDBACK QUALITATIVO FINAL -->
+    <div class="card">
+      <div class="card-title">💬 Perguntas de Fechamento (Opinião do Usuário)</div>
+      
+      <div style="margin-bottom: 14px;">
+        <label>1. O que foi a melhor parte ou o recurso mais impressionante do sistema?</label>
+        <textarea rows="2" placeholder="ex: O pátio de retalhos e a calculadora automática de quilos..."></textarea>
+      </div>
+
+      <div style="margin-bottom: 14px;">
+        <label>2. Se você pudesse mudar ou adicionar UMA coisa agora, o que seria?</label>
+        <textarea rows="2" placeholder="ex: Queria fotos das peças ou aviso no WhatsApp quando faltar item..."></textarea>
+      </div>
+
+      <div style="margin-bottom: 14px;">
+        <label>3. Numa escala de 0 a 10, qual a chance de você recomendar este sistema para outra metalúrgica? (NPS)</label>
+        <select style="max-width: 200px;">
+          <option value="10">10 - Com certeza absoluta</option>
+          <option value="9">9 - Muito provável</option>
+          <option value="8">8 - Provável</option>
+          <option value="7">7 - Neutro</option>
+          <option value="5">5 ou menos - Pouco provável</option>
+        </select>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // Configurar data atual automática
+    document.getElementById("partData").value = new Date().toISOString().slice(0, 16);
+
+    // Cronômetro
+    let timerInterval = null;
+    let seconds = 0;
+
+    function startTimer() {
+      if (timerInterval) return;
+      timerInterval = setInterval(() => {
+        seconds++;
+        const mins = String(Math.floor(seconds / 60)).padStart(2, '0');
+        const secs = String(seconds % 60).padStart(2, '0');
+        document.getElementById("timerDisplay").textContent = `${mins}:${secs}`;
+      }, 1000);
+    }
+
+    function pauseTimer() {
+      clearInterval(timerInterval);
+      timerInterval = null;
+    }
+
+    function resetTimer() {
+      pauseTimer();
+      seconds = 0;
+      document.getElementById("timerDisplay").textContent = "00:00";
+    }
+
+    function limparFicha() {
+      if (confirm("Deseja limpar todos os campos para iniciar uma nova avaliação com outro usuário?")) {
+        location.reload();
+      }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Proposta de Piloto — MetalEstoque PRO</title>
+  <style>
+    :root { --bg:#07111f; --panel:#102039; --text:#eef7ff; --muted:#9db1c9; --line:rgba(157,177,201,.2); --cyan:#25d6f5; --green:#34d399; --amber:#fbbf24; }
+    * { box-sizing:border-box; }
+    body { margin:0; color:var(--text); background:radial-gradient(circle at 12% 0%,rgba(37,214,245,.12),transparent 30rem),var(--bg); font:14px/1.5 Inter,system-ui,-apple-system,"Segoe UI",sans-serif; }
+    .wrap { width:min(1160px,calc(100% - 32px)); margin:0 auto; }
+    header { padding:28px 0 20px; border-bottom:1px solid var(--line); }
+    h1 { margin:8px 0 5px; font-size:clamp(28px,4vw,42px); line-height:1.05; letter-spacing:-.05em; }
+    h2 { margin:0 0 15px; font-size:20px; }
+    .sub,.hint { color:var(--muted); }
+    .sub { margin:0; }
+    .badge { display:inline-flex; padding:6px 10px; border:1px solid rgba(37,214,245,.3); border-radius:999px; color:#a9f5ff; background:rgba(37,214,245,.08); font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.05em; }
+    main { padding:24px 0 50px; }
+    .layout { display:grid; grid-template-columns:390px 1fr; gap:20px; align-items:start; }
+    .card { padding:20px; border:1px solid var(--line); border-radius:15px; background:rgba(16,32,57,.76); }
+    label { display:grid; gap:6px; margin-bottom:13px; color:#c9d8e8; font-size:12px; font-weight:800; }
+    input,select,textarea { width:100%; padding:10px 11px; color:var(--text); background:#091525; border:1px solid var(--line); border-radius:8px; outline:0; font:inherit; }
+    input:focus,select:focus,textarea:focus { border-color:var(--cyan); box-shadow:0 0 0 3px rgba(37,214,245,.1); }
+    textarea { min-height:80px; resize:vertical; }
+    .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+    .btns { display:flex; flex-wrap:wrap; gap:9px; }
+    button,a.btn { display:inline-flex; align-items:center; justify-content:center; min-height:40px; padding:0 14px; border:1px solid transparent; border-radius:8px; color:#03111b; background:var(--cyan); font:800 13px inherit; cursor:pointer; text-decoration:none; }
+    .secondary { color:var(--text); border-color:var(--line); background:rgba(255,255,255,.04); }
+    .green { color:#052016; background:var(--green); }
+    .paper { min-height:700px; padding:44px 48px; color:#162333; background:#fff; box-shadow:0 20px 60px rgba(0,0,0,.28); }
+    .paper h2 { color:#08233a; font-size:25px; }
+    .paper-head { display:flex; justify-content:space-between; gap:20px; padding-bottom:20px; border-bottom:2px solid #14b8d4; }
+    .paper-brand { color:#07849b; font-size:19px; font-weight:900; letter-spacing:-.03em; }
+    .paper small { color:#5c6a78; }
+    .paper-section { padding:20px 0; border-bottom:1px solid #d9e0e7; }
+    .paper-section h3 { margin:0 0 8px; color:#12415f; font-size:15px; }
+    .paper-section p { margin:5px 0; }
+    .paper ul { margin:8px 0 0; padding-left:20px; }
+    .price-box { display:flex; align-items:end; justify-content:space-between; gap:20px; padding:16px; border:1px solid #b9dce5; border-radius:8px; background:#eefbfe; }
+    .price-box strong { color:#08758a; font-size:28px; }
+    .signature { display:grid; grid-template-columns:1fr 1fr; gap:40px; margin-top:55px; color:#516170; }
+    .signature div { padding-top:8px; border-top:1px solid #64748b; text-align:center; }
+    #status { min-height:20px; margin:10px 0 0; color:var(--green); font-size:12px; }
+    @media(max-width:850px) { .layout { grid-template-columns:1fr; } .paper { padding:28px 22px; } }
+    @media print { body { color:#111; background:#fff; } header,.controls,.no-print { display:none!important; } main { padding:0; } .wrap { width:100%; } .layout { display:block; } .paper { min-height:auto; padding:20px; box-shadow:none; } }
+  </style>
+</head>
+<body>
+  <header><div class="wrap"><span class="badge">Proposta comercial · piloto</span><h1>Gerador de proposta</h1><p class="sub">Monte uma proposta honesta, com escopo, preço, limitações e validade. Revise com o cliente antes de enviar.</p></div></header>
+  <main class="wrap"><div class="layout"><section class="card controls"><h2>Dados da proposta</h2><p class="hint"><a class="btn secondary" href="TERMO_PILOTO_COMERCIAL.md">Abrir termo operacional ↗</a></p><label>Empresa cliente<input id="company" placeholder="Ex.: Caldeiraria Aliança"></label><div class="grid2"><label>Contato<input id="contact" placeholder="Nome / cargo"></label><label>Cidade / UF<input id="city" placeholder="Ex.: Joinville/SC"></label></div><div class="grid2"><label>Data<input id="proposalDate" type="date"></label><label>Validade até<input id="validUntil" type="date"></label></div><label>Oferta<select id="package"><option value="pilot">Piloto validado — R$ 3.900</option><option value="base">Base Almoxarifado — R$ 6.000 + R$ 1.490/mês</option><option value="pro">Pro Caldeiraria/OP — R$ 12.000 + R$ 2.490/mês</option></select></label><label>Contexto e dor confirmada<textarea id="pain" placeholder="Ex.: compras emergenciais, retalhos sem localização..."></textarea></label><label>Observações comerciais<textarea id="notes" placeholder="Prazo, responsável, condições específicas..."></textarea></label><div class="btns"><button class="green" type="button" id="generate">Gerar proposta</button><button class="secondary" type="button" id="copy">Copiar resumo</button><button class="secondary" type="button" id="download">Baixar TXT</button><button class="secondary" type="button" onclick="window.print()">Imprimir / PDF</button></div><p id="status"></p><p class="hint">A proposta não envia dados automaticamente. O rascunho fica apenas neste navegador.</p></section><section id="preview" class="paper"><div class="paper-head"><div><div class="paper-brand">MetalEstoque PRO</div><small>Controle operacional para metalmecânicas</small></div><div style="text-align:right"><strong>PROPOSTA COMERCIAL</strong><br><small id="previewNumber">Rascunho</small></div></div><div class="paper-section"><h2 id="previewTitle">Proposta de piloto</h2><p>Cliente: <strong id="previewCompany">—</strong></p><p>Contato: <span id="previewContact">—</span> · <span id="previewCity">—</span></p><p>Emissão: <span id="previewDate">—</span> · Validade: <span id="previewValid">—</span></p></div><div class="paper-section"><h3>Contexto observado</h3><p id="previewPain">Preencha a dor confirmada na conversa comercial.</p></div><div class="paper-section"><h3>Escopo contratado</h3><ul id="previewScope"></ul></div><div class="paper-section"><div class="price-box"><div><small>Investimento inicial</small><br><strong id="previewSetup">R$ 3.900</strong></div><div style="text-align:right"><small>Recorrência após validação</small><br><strong id="previewMonthly">—</strong></div></div></div><div class="paper-section"><h3>Condições e limites</h3><p id="previewTerms"></p><p><strong>Observações:</strong> <span id="previewNotes">—</span></p></div><div class="signature"><div>MetalEstoque PRO</div><div id="previewSign">Cliente</div></div></section></div></main>
+  <script>
+    const PACKAGES = {
+      pilot: { name:"Piloto validado", setup:"R$ 3.900", monthly:"—", scope:["Diagnóstico inicial e baseline da célula", "Importação de até 3.000 SKUs", "Treinamento de gestor, almoxarife e PCP", "Execução acompanhada dos fluxos principais", "Relatório antes/depois em 30 dias"], terms:"O piloto dura 30 dias, é instalado em uma estação/base controlada e pode ser integralmente abatido em contratação anual em até 15 dias. Não inclui hardware, integração fiscal ou sincronização multiestação." },
+      base: { name:"Base Almoxarifado", setup:"R$ 6.000", monthly:"R$ 1.490/mês", scope:["Catálogo, localização e movimentações", "Importação/exportação e backup", "Inventário e níveis de estoque", "Etiquetas e necessidade de compras", "Implantação em uma planta"], terms:"A implantação cobre configuração e migração combinadas. A operação atual é local-first; sincronização multiusuário e integrações dependem de projeto contratado." },
+      pro: { name:"Pro Caldeiraria/OP", setup:"R$ 12.000", monthly:"R$ 2.490/mês", scope:["Todos os recursos Base", "Pátio de retalhos e reúso", "BOM, OP e baixa de materiais", "Rastreabilidade de corrida", "Acompanhamento de indicadores"], terms:"A implantação e a mensalidade não incluem ERP fiscal, hardware, integração sob medida ou garantia de conformidade ISO. O escopo deve ser confirmado em reunião de kickoff." }
+    };
+    const $ = id => document.getElementById(id);
+    const esc = value => String(value ?? "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;");
+    const moneyText = value => value || "—";
+    function data() { return { company:$("company").value.trim(), contact:$("contact").value.trim(), city:$("city").value.trim(), proposalDate:$("proposalDate").value, validUntil:$("validUntil").value, packageKey:$("package").value, pain:$("pain").value.trim(), notes:$("notes").value.trim() }; }
+    function formatDate(value) { if (!value) return "—"; const parts=value.split("-"); return parts.length===3 ? parts[2]+"/"+parts[1]+"/"+parts[0] : value; }
+    function render() { const d=data(); const pack=PACKAGES[d.packageKey]; $("previewTitle").textContent = "Proposta: " + pack.name; $("previewCompany").textContent=d.company || "—"; $("previewContact").textContent=d.contact || "—"; $("previewCity").textContent=d.city || "—"; $("previewDate").textContent=formatDate(d.proposalDate); $("previewValid").textContent=formatDate(d.validUntil); $("previewPain").textContent=d.pain || "Preencha a dor confirmada na conversa comercial."; $("previewSetup").textContent=pack.setup; $("previewMonthly").textContent=moneyText(pack.monthly); $("previewTerms").textContent=pack.terms; $("previewNotes").textContent=d.notes || "—"; $("previewSign").textContent=d.company || "Cliente"; $("previewScope").innerHTML=pack.scope.map(item => "<li>"+esc(item)+"</li>").join(""); $("previewNumber").textContent="Rascunho local · " + new Date().toLocaleDateString("pt-BR"); localStorage.setItem("metalestoque_proposal_draft_v1", JSON.stringify(d)); return {d,pack}; }
+    function summary() { const r=render(); return ["PROPOSTA METALESTOQUE PRO", "Cliente: "+(r.d.company||"não informado"), "Oferta: "+r.pack.name, "Investimento: "+r.pack.setup, "Recorrência: "+(r.pack.monthly||"não aplicável"), "Dor: "+(r.d.pain||"não informada"), "Validade: "+(formatDate(r.d.validUntil)||"não informada")].join("\n"); }
+    $("generate").addEventListener("click",()=>{ render(); $("status").textContent="Proposta atualizada. Revise o escopo antes de enviar."; });
+    $("copy").addEventListener("click",async()=>{ const text=summary(); try { await navigator.clipboard.writeText(text); $("status").textContent="Resumo copiado."; } catch(error) { window.prompt("Copie o resumo:",text); } });
+    $("download").addEventListener("click",()=>{ const blob=new Blob([summary()],{type:"text/plain;charset=utf-8"}); const link=document.createElement("a"); link.href=URL.createObjectURL(blob); link.download="proposta_metalestoque.txt"; link.click(); setTimeout(()=>URL.revokeObjectURL(link.href),1000); });
+    $("package").addEventListener("change",render);
+    try { const saved=JSON.parse(localStorage.getItem("metalestoque_proposal_draft_v1")||"null"); if(saved) { Object.keys(saved).forEach(key=>{ if($(key)) $(key).value=saved[key]; }); } } catch(error) {}
+    const today=new Date(); const iso=today.toISOString().slice(0,10); $("proposalDate").value ||= iso; const valid=new Date(today.getTime()+15*86400000).toISOString().slice(0,10); $("validUntil").value ||= valid; render();
+  </script>
+</body>
+</html>

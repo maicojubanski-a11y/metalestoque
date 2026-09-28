@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cadastro Inteligente — MetalEstoque PRO</title>
+  <style>
+    :root { --bg:#07111f; --panel:#102039; --text:#eef7ff; --muted:#9db1c9; --line:rgba(157,177,201,.2); --cyan:#25d6f5; --green:#34d399; --amber:#fbbf24; --rose:#fb7185; }
+    * { box-sizing:border-box; }
+    body { margin:0; color:var(--text); background:radial-gradient(circle at 10% 0%,rgba(37,214,245,.12),transparent 30rem),var(--bg); font:14px/1.5 Inter,system-ui,-apple-system,"Segoe UI",sans-serif; }
+    .wrap { width:min(1180px,calc(100% - 32px)); margin:0 auto; }
+    header { padding:28px 0 20px; border-bottom:1px solid var(--line); }
+    .head { display:flex; justify-content:space-between; align-items:flex-start; gap:18px; }
+    h1 { margin:8px 0 5px; font-size:clamp(28px,4vw,42px); line-height:1.05; letter-spacing:-.05em; }
+    h2 { margin:0 0 15px; font-size:20px; }
+    .sub,.hint { color:var(--muted); }
+    .sub { margin:0; }
+    .badge { display:inline-flex; padding:6px 10px; border:1px solid rgba(37,214,245,.3); border-radius:999px; color:#a9f5ff; background:rgba(37,214,245,.08); font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.05em; }
+    main { padding:24px 0 50px; }
+    .layout { display:grid; grid-template-columns:420px 1fr; gap:20px; align-items:start; }
+    .card { padding:20px; border:1px solid var(--line); border-radius:15px; background:rgba(16,32,57,.76); }
+    label { display:grid; gap:6px; margin-bottom:13px; color:#c9d8e8; font-size:12px; font-weight:800; }
+    input,select,textarea { width:100%; padding:10px 11px; color:var(--text); background:#091525; border:1px solid var(--line); border-radius:8px; outline:0; font:inherit; }
+    input:focus,select:focus,textarea:focus { border-color:var(--cyan); box-shadow:0 0 0 3px rgba(37,214,245,.1); }
+    textarea { min-height:66px; resize:vertical; }
+    .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+    .btns { display:flex; flex-wrap:wrap; gap:9px; }
+    button,a.btn { display:inline-flex; align-items:center; justify-content:center; min-height:40px; padding:0 14px; border:1px solid transparent; border-radius:8px; color:#03111b; background:var(--cyan); font:800 13px inherit; cursor:pointer; text-decoration:none; }
+    .secondary { color:var(--text); border-color:var(--line); background:rgba(255,255,255,.04); }
+    .green { color:#052016; background:var(--green); }
+    .warning { color:#251900; background:var(--amber); }
+    .danger { color:#2a0710; background:var(--rose); }
+    .camera { overflow:hidden; min-height:245px; display:grid; place-items:center; border:1px dashed rgba(37,214,245,.38); border-radius:10px; background:#050d18; }
+    video,img { display:block; max-width:100%; max-height:300px; object-fit:contain; }
+    .camera-placeholder { padding:30px; color:var(--muted); text-align:center; }
+    .status { min-height:22px; margin:10px 0 0; color:var(--green); font-size:12px; }
+    .status.error { color:var(--rose); }
+    .confidence { padding:10px; margin:10px 0; color:#ffe7a2; border:1px solid rgba(251,191,36,.25); border-radius:8px; background:rgba(251,191,36,.08); font-size:12px; }
+    table { width:100%; border-collapse:collapse; }
+    th,td { padding:10px 8px; border-bottom:1px solid var(--line); text-align:left; vertical-align:top; }
+    th { color:#b8cce0; font-size:11px; text-transform:uppercase; }
+    .empty { padding:24px; color:var(--muted); text-align:center; }
+    @media(max-width:880px) { .layout { grid-template-columns:1fr; } .head { flex-direction:column; } }
+    @media(max-width:560px) { .wrap { width:min(100% - 22px,1180px); } .grid2 { grid-template-columns:1fr; } }
+  </style>
+</head>
+<body>
+  <header><div class="wrap head"><div><span class="badge">Cadastro inteligente · revisão humana</span><h1>Nova peça por foto</h1><p class="sub">Fotografe a etiqueta ou carregue um documento. A visão/OCR sugere os campos; o operador revisa e confirma antes de gravar no SQLite.</p></div><div class="btns"><a class="btn secondary" href="index.html">Voltar ao sistema</a><a class="btn secondary" href="vendas.html">Página comercial</a></div></div></header>
+  <main class="wrap"><div class="layout"><section><div class="card"><h2>1. Capturar imagem</h2><div class="camera" id="cameraBox"><div class="camera-placeholder" id="cameraPlaceholder">Use a câmera do dispositivo ou selecione uma imagem da etiqueta.</div><video id="video" autoplay playsinline hidden></video><img id="preview" alt="Prévia da etiqueta" hidden></div><canvas id="canvas" hidden></canvas><div class="btns" style="margin-top:12px"><button class="secondary" type="button" id="startCamera">Abrir câmera</button><button class="secondary" type="button" id="capture" disabled>Capturar</button><label class="btn secondary" style="margin:0;cursor:pointer">Escolher arquivo<input id="fileInput" type="file" accept="image/png,image/jpeg,image/webp" capture="environment" hidden></label></div><button class="green" type="button" id="scan" style="width:100%;margin-top:10px" disabled>Extrair dados por OCR/visão</button><p class="status" id="scanStatus"></p><div class="confidence" id="visionNote">A imagem é enviada somente ao provedor configurado no servidor quando VISION_API_KEY estiver definida. Sem chave, use o preenchimento manual.</div></div><div class="card"><h2>Peças já no banco</h2><p class="hint">Fonte: API SQLite local. O banco não é o localStorage do navegador.</p><div id="itemsStatus" class="status"></div><div style="overflow:auto"><table><thead><tr><th>SKU</th><th>Descrição</th><th>Material</th><th>Saldo</th></tr></thead><tbody id="itemsTable"></tbody></table></div></div></section><section class="card"><h2>2. Revisar e confirmar</h2><p class="hint">Nenhuma sugestão da visão é gravada automaticamente. Confirme ou corrija todos os campos.</p><form id="itemForm"><div class="grid2"><label>SKU<input id="sku" required placeholder="CHP-1020-001"></label><label>Unidade<select id="unidade"><option>un</option><option>chapa</option><option>barra</option><option>m</option><option>kg</option><option>cx</option><option>cilindro</option></select></label></div><label>Descrição<input id="nome" required placeholder="Chapa Aço SAE 1020 1/4"></label><div class="grid2"><label>Categoria<select id="categoria"><option value="chapas">Chapas</option><option value="tubos_perfis">Tubos e perfis</option><option value="solda_corte">Solda e consumíveis</option><option value="usinagem">Usinagem</option><option value="fixadores">Fixadores</option><option value="quimicos_oleos">Químicos</option><option value="epi">EPI</option><option value="semiacabados">Semiacabados</option><option value="acabados">Acabados</option></select></label><label>Material<input id="material" placeholder="Aço SAE 1020"></label></div><div class="grid2"><label>Dimensões<input id="dimensoes" placeholder="6.35 x 1200 x 3000 mm"></label><label>Corrida / certificado<input id="corrida" placeholder="G-84920 (Gerdau)"></label></div><div class="grid2"><label>Localização<input id="localizacao" value="Almoxarifado"></label><label>Fornecedor<input id="fornecedor"></label></div><div class="grid2"><label>Saldo atual<input id="estoque_atual" type="number" min="0" step="any" value="0"></label><label>Custo unitário<input id="custo_unitario" type="number" min="0" step="any" value="0"></label></div><div class="grid2"><label>Estoque mínimo<input id="estoque_minimo" type="number" min="0" step="any" value="0"></label><label>Estoque máximo<input id="estoque_maximo" type="number" min="0" step="any" value="0"></label></div><label>Observações<textarea id="obs"></textarea></label><label>Operador responsável<input id="operator" placeholder="Nome do operador"></label><div class="btns"><button class="green" type="submit">Salvar no banco SQLite</button><button class="secondary" type="button" id="clear">Limpar campos</button></div><p class="status" id="saveStatus"></p></form></section></div></main>
+  <script>
+    const API_BASE = window.METALESTOQUE_API_BASE || (location.port === "8090" ? "/api" : "http://127.0.0.1:8090/api");
+    const $ = id => document.getElementById(id);
+    const fields = ["sku","nome","categoria","unidade","material","dimensoes","corrida","localizacao","fornecedor","estoque_atual","custo_unitario","estoque_minimo","estoque_maximo","obs"];
+    let stream = null;
+    let imageDataUrl = "";
+    function setStatus(id, message, error) { const node=$(id); node.textContent=message; node.classList.toggle("error",Boolean(error)); }
+    function setField(id, value) { const node=$(id); if (node && value !== null && value !== undefined && value !== "") node.value=value; }
+    function collectItem() { const item={}; fields.forEach(id=>{ item[id]=$(id).value; }); ["estoque_atual","custo_unitario","estoque_minimo","estoque_maximo"].forEach(id=>{ item[id]=Number(item[id]) || 0; }); return item; }
+    function clearFields() { fields.forEach(id=>{ if (id==="categoria") $(id).value="chapas"; else if (id==="unidade") $(id).value="un"; else if (id==="localizacao") $(id).value="Almoxarifado"; else $(id).value=""; }); $("estoque_atual").value="0"; $("custo_unitario").value="0"; $("estoque_minimo").value="0"; $("estoque_maximo").value="0"; }
+    function applyDraft(draft) { fields.forEach(id=>setField(id,draft[id])); if (draft.confidence || draft.warnings) { $("visionNote").textContent="Confiança: " + (draft.confidence || "não informada") + ". " + ((draft.warnings || []).join(" ") || "Revise todos os campos antes de salvar."); } }
+    async function scan() { if (!imageDataUrl) return; setStatus("scanStatus","Enviando imagem para o motor de visão...",false); try { const response=await fetch(API_BASE+"/vision/scan",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({imageDataUrl})}); const body=await response.json(); if(!response.ok) throw new Error(body.error || "Falha na leitura."); applyDraft(body.draft || {}); setStatus("scanStatus","Sugestão preenchida. Revise e confirme os campos.",false); } catch(error) { setStatus("scanStatus",error.message+" Você pode preencher manualmente.",true); } }
+    function loadPreview(file) { if(!file) return; const reader=new FileReader(); reader.onload=event=>{ imageDataUrl=String(event.target.result); $("preview").src=imageDataUrl; $("preview").hidden=false; $("video").hidden=true; $("cameraPlaceholder").hidden=true; $("scan").disabled=false; }; reader.readAsDataURL(file); }
+    $("startCamera").addEventListener("click",async()=>{ try { stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:"environment"}},audio:false}); $("video").srcObject=stream; $("video").hidden=false; $("preview").hidden=true; $("cameraPlaceholder").hidden=true; $("capture").disabled=false; } catch(error) { setStatus("scanStatus","Não foi possível abrir a câmera: "+error.message,true); } });
+    $("capture").addEventListener("click",()=>{ const video=$("video"), canvas=$("canvas"); if(!video.videoWidth) return; canvas.width=video.videoWidth; canvas.height=video.videoHeight; canvas.getContext("2d").drawImage(video,0,0); imageDataUrl=canvas.toDataURL("image/jpeg",0.88); $("preview").src=imageDataUrl; $("preview").hidden=false; $("scan").disabled=false; });
+    $("fileInput").addEventListener("change",event=>loadPreview(event.target.files[0]));
+    $("scan").addEventListener("click",scan);
+    $("clear").addEventListener("click",()=>{ clearFields(); setStatus("saveStatus","",false); });
+    $("itemForm").addEventListener("submit",async event=>{ event.preventDefault(); setStatus("saveStatus","Salvando no banco...",false); try { const response=await fetch(API_BASE+"/items",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({item:collectItem(),operator:$("operator").value})}); const body=await response.json(); if(!response.ok) throw new Error(body.error || "Falha ao salvar."); setStatus("saveStatus","Peça " + body.item.sku + " salva no SQLite.",false); clearFields(); loadItems(); } catch(error) { setStatus("saveStatus",error.message+" Verifique se api-server.js está em execução.",true); } });
+    async function loadItems() { try { const response=await fetch(API_BASE+"/items"); const body=await response.json(); if(!response.ok) throw new Error(body.error || "Falha ao consultar banco."); const tbody=$("itemsTable"); tbody.replaceChildren(); (body.items || []).slice(0,50).forEach(item=>{ const row=document.createElement("tr"); [item.sku,item.nome,item.material || "—",String(item.estoque_atual)+" "+item.unidade].forEach(value=>{ const cell=document.createElement("td"); cell.textContent=value; row.appendChild(cell); }); tbody.appendChild(row); }); $("itemsStatus").textContent=(body.items || []).length+" item(ns) na base local."; } catch(error) { setStatus("itemsStatus",error.message+" Inicie o servidor Node da API.",true); } }
+    loadItems();
+  </script>
+</body>
+</html>

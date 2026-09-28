@@ -1,0 +1,19 @@
+CODIGO;DESCRICAO;CATEGORIA;UNIDADE;DIMENSOES;MATERIAL;CORRIDA;LOCALIZACAO;ESTOQUE_ATUAL;ESTOQUE_MINIMO;ESTOQUE_MAXIMO;CUSTO_UNITARIO;FORNECEDOR;OBSERVACOES
+CHP-1020-001;Chapa Aço Carbono SAE 1020 1/4" (6.35mm);chapas;chapa;6.35 x 1200 x 3000 mm;Aço SAE 1020;G-84920;Pátio Chapas - Vão 02;14;8;30;1150.00;Aços Gerdau;Chapa laminada a quente com certificado
+CHP-1045-002;Chapa Aço SAE 1045 1/2" (12.70mm);chapas;chapa;12.70 x 1500 x 3000 mm;Aço SAE 1045;U-11029;Pátio Chapas - Vão 05;3;5;15;2890.00;Usiminas;Base de prensas e máquinas pesadas
+CHP-INOX-304;Chapa Inox AISI 304 Escovada #14 (2.00mm);chapas;chapa;2.00 x 1250 x 2500 mm;Inox AISI 304;AP-9941;Almox. Inox - Prateleira 1;9;4;20;980.00;Aperam;Película de proteção azul
+TUB-RED-050;Tubo Redondo Industrial SAE 1020 Ø 2" x 2.00mm;tubos_perfis;barra;Ø 50.8 x 2.00 x 6000 mm;Aço SAE 1020;TM-4410;Cantiléver Central - Vão 4;45;20;100;142.50;Açotubo;Barras padrão de 6 metros
+TUB-QUA-5026;Tubo Quadrado Metalão 50x50x2.65mm;tubos_perfis;barra;50 x 50 x 2.65 x 6000 mm;Aço SAE 1012;TM-8820;Cantiléver Lateral;30;15;80;118.00;Açotubo;Estrutura metálica leve
+VIG-W150-13;Perfil Estrutural Viga W 150 x 13,0 kg/m;tubos_perfis;barra;W150x13.0 - Barra 12m;ASTM A572 Grau 50;G-77124;Pátio Externo - Cavalete 1;4;6;20;1120.00;Aços Gerdau;Viga laminada para pontes rolantes
+TAR-1045-075;Tarugo Maciço Redondo Laminado SAE 1045 Ø 3" (76.2mm);tubos_perfis;m;Ø 76.2mm;Aço SAE 1045;VL-3011;Galpão Torno CNC;18.5;10;50;215.00;Villares Metals;Usinagem de eixos e flanges
+SOL-MIG-120;Arame de Solda MIG/MAG ER70S-6 1.20mm (Carretel 18kg);solda_corte;un;Carretel 18 kg;Cobreado ER70S-6;ESAB-5582;Armário Solda - A-01;22;10;50;245.00;ESAB;Solda processo GMAW
+SOL-GAS-MIX;Gás de Proteção Mistura ATAL (Argônio + CO2);solda_corte;cilindro;Cilindro 10 m³ (200 bar);Argônio 75% CO2 25%;WHITE-2026;Central de Gases - Pátio;2;5;12;310.00;White Martins;Comodato com fornecedor
+COR-DIS-045;Disco de Corte Fino 4.1/2" x 1.0mm para Inox/Aço;solda_corte;cx;115 x 1.0 x 22.23 mm (Cx 25 un);Óxido de Alumínio;NORTON-412;Estante Abrasivos - Gaveta 14;15;8;40;95.00;Norton Saint-Gobain;Caixa fechada com 25 unidades
+USI-PAS-WNMG;Inserto Metal Duro WNMG 080408-PM Torneamento;usinagem;cx;WNMG 080408 (Cx 10 un);Metal Duro TiCN;SAND-9810;Armário CNC - Gaveta 03;6;3;15;340.00;Sandvik Coromant;Para torneamento médio/pesado
+USI-FRE-TOPO12;Fresa de Topo Inteiriça Metal Duro Ø 12mm 4 Cortes;usinagem;un;Ø 12 x 30 x 75 mm;Metal Duro TiAlN;DOR-2025;Armário CNC - Gaveta 08;8;4;20;165.00;Dormer Pramet;Para fresadora vertical CNC
+FIX-PAR-M1250;Parafuso Sextavado Aço 8.8 M12 x 50mm Zincado;fixadores;cx;M12 x 50 (Cx c/ 100 un);Aço Classe 8.8;CISER-9912;Estante Fixadores - Gaveteiro 22;12;5;30;88.00;Ciser Parafusos;Parafuso sextavado rosca inteira
+FIX-POR-M12TRAV;Porca Sextavada Travante Nylon M12 Grau 8;fixadores;cx;M12 Passo 1.75 (Cx c/ 200 un);Aço Classe 8 + Nylon;CISER-7744;Estante Fixadores - Gaveteiro 23;7;4;25;72.00;Ciser Parafusos;Porca autofrenante
+QUI-OLE-SOLUV;Óleo Solúvel Refrigerante Semissintético Bio-resistente;quimicos_oleos;lt;Bombona 20 Litros;Emulsão Sintética;ROCH-2026;Doca Química - Palete 04;60;40;200;24.50;Rocol Lubrificantes;Uso diluído em tornos e centros de usinagem
+EPI-LUV-RASPA;Luva de Raspa Couro Cano Longo 20cm;epi;un;Tamanho Único - CA 14520;Couro Bovino;PRO-8812;Almoxarifado EPIs - Prateleira 1;35;15;80;21.00;Danny EPIs;EPI obrigatório caldeiraria
+SEM-EST-CHASSI;Subconjunto Soldado: Longarina Chassi Agrícola;semiacabados;un;4200 x 600 x 300 mm;Aço ASTM A36;OP-INT-022;Espera de Pintura;4;2;10;3400.00;Produção Interna;Aguardando jateamento e pintura
+ACA-SILO-5T;Silo Metálico Cônico Armazenador 5 Toneladas;acabados;un;Ø 2400 x 4800 mm;Aço Galvanizado;OP-2026-01;Pátio Expedição - Vaga 03;1;0;3;24500.00;Produção Interna;Pronto para expedição ao cliente

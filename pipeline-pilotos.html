@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pipeline de Pilotos — MetalEstoque PRO</title>
+  <style>
+    :root { --bg:#07111f; --panel:#102039; --text:#eef7ff; --muted:#9db1c9; --line:rgba(157,177,201,.2); --cyan:#25d6f5; --green:#34d399; --amber:#fbbf24; --rose:#fb7185; }
+    * { box-sizing:border-box; }
+    body { margin:0; color:var(--text); background:radial-gradient(circle at 12% 0%,rgba(37,214,245,.12),transparent 32rem),var(--bg); font:14px/1.5 Inter,system-ui,-apple-system,"Segoe UI",sans-serif; }
+    .wrap { width:min(1180px,calc(100% - 32px)); margin:0 auto; }
+    header { padding:28px 0 19px; border-bottom:1px solid var(--line); }
+    .head { display:flex; justify-content:space-between; align-items:flex-start; gap:18px; }
+    h1 { margin:8px 0 5px; font-size:clamp(28px,4vw,42px); line-height:1.05; letter-spacing:-.05em; }
+    h2 { margin:0 0 15px; font-size:20px; }
+    .sub,.hint { color:var(--muted); }
+    .sub { max-width:780px; margin:0; }
+    .badge { display:inline-flex; padding:6px 10px; border:1px solid rgba(37,214,245,.3); border-radius:999px; color:#a9f5ff; background:rgba(37,214,245,.08); font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.05em; }
+    main { padding:24px 0 50px; }
+    .card { padding:20px; margin-bottom:18px; border:1px solid var(--line); border-radius:15px; background:rgba(16,32,57,.76); }
+    .metrics { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:18px; }
+    .metric { padding:15px; border:1px solid var(--line); border-radius:11px; background:rgba(255,255,255,.035); }
+    .metric strong { display:block; font-size:24px; }
+    .metric small { color:var(--muted); }
+    .grid2,.grid3 { display:grid; gap:13px; }
+    .grid2 { grid-template-columns:repeat(2,1fr); }
+    .grid3 { grid-template-columns:repeat(3,1fr); }
+    label { display:grid; gap:6px; color:#c9d8e8; font-size:12px; font-weight:800; }
+    input,select,textarea { width:100%; padding:10px 11px; color:var(--text); background:#091525; border:1px solid var(--line); border-radius:8px; outline:0; font:inherit; }
+    input:focus,select:focus,textarea:focus { border-color:var(--cyan); box-shadow:0 0 0 3px rgba(37,214,245,.1); }
+    textarea { min-height:70px; resize:vertical; }
+    .btns { display:flex; flex-wrap:wrap; gap:9px; }
+    button,a.btn { display:inline-flex; align-items:center; justify-content:center; min-height:40px; padding:0 14px; border:1px solid transparent; border-radius:8px; color:#03111b; background:var(--cyan); font:800 13px inherit; cursor:pointer; text-decoration:none; }
+    .secondary { color:var(--text); border-color:var(--line); background:rgba(255,255,255,.04); }
+    .success { color:#052016; background:var(--green); }
+    .warning { color:#251900; background:var(--amber); }
+    .danger { color:#2a0710; background:var(--rose); }
+    .table-wrap { overflow:auto; }
+    table { width:100%; min-width:980px; border-collapse:collapse; }
+    th,td { padding:10px 8px; border-bottom:1px solid var(--line); text-align:left; vertical-align:top; }
+    th { color:#b8cce0; font-size:11px; text-transform:uppercase; letter-spacing:.04em; }
+    .stage { display:inline-flex; padding:4px 7px; border-radius:6px; font-size:11px; font-weight:800; white-space:nowrap; }
+    .stage-lead { color:#b9d7ff; background:rgba(96,165,250,.15); }
+    .stage-demo { color:#a9f5ff; background:rgba(37,214,245,.14); }
+    .stage-pilot { color:#ffe7a2; background:rgba(251,191,36,.16); }
+    .stage-paid { color:#b7fbdc; background:rgba(52,211,153,.16); }
+    .stage-contract { color:#d8c3ff; background:rgba(167,139,250,.16); }
+    .stage-lost { color:#ffc2cc; background:rgba(251,113,133,.14); }
+    .actions { display:flex; flex-wrap:wrap; gap:5px; }
+    .actions button { min-height:30px; padding:0 8px; font-size:11px; }
+    .empty { padding:30px; color:var(--muted); text-align:center; }
+    footer { color:var(--muted); font-size:12px; }
+    @media(max-width:850px) { .metrics,.grid3 { grid-template-columns:repeat(2,1fr); } .head { flex-direction:column; } }
+    @media(max-width:580px) { .wrap { width:min(100% - 22px,1180px); } .metrics,.grid2,.grid3 { grid-template-columns:1fr; } }
+    @media print { body { color:#111; background:#fff; } .card { background:#fff; border-color:#aaa; } .no-print { display:none!important; } }
+  </style>
+</head>
+<body>
+  <header><div class="wrap head"><div><span class="badge">Validação comercial · local-first</span><h1>Pipeline de pilotos</h1><p class="sub">Controle contas, próximas ações e valor potencial sem misturar demonstração, piloto pago e contrato. Os dados ficam neste navegador e podem ser exportados.</p></div><div class="btns no-print"><a class="btn secondary" href="vendas.html">Página comercial</a><a class="btn secondary" href="pilot-scorecard.html">Scorecard do piloto</a></div></div></header>
+  <main class="wrap">
+    <section class="metrics"><div class="metric"><strong id="metricTotal">0</strong><small>contas cadastradas</small></div><div class="metric"><strong id="metricActive">0</strong><small>em avanço comercial</small></div><div class="metric"><strong id="metricPipeline">R$ 0</strong><small>pipeline de implantação</small></div><div class="metric"><strong id="metricNext">—</strong><small>próxima ação</small></div></section>
+    <section class="card"><h2>Adicionar ou atualizar conta</h2><form id="leadForm"><input id="leadId" type="hidden"><div class="grid3"><label>Empresa<input id="leadCompany" required placeholder="Ex.: Caldeiraria Aliança"></label><label>Cidade / UF<input id="leadCity" placeholder="Ex.: Joinville / SC"></label><label>Segmento<select id="leadSegment"><option>Caldeiraria</option><option>Usinagem</option><option>Corte plasma/laser</option><option>Fabricante sob encomenda</option><option>Serralheria industrial</option></select></label></div><div class="grid3" style="margin-top:13px"><label>Contato / canal<input id="leadContact" placeholder="Nome, telefone ou e-mail"></label><label>Champion operacional<input id="leadChampion" placeholder="Almoxarife / PCP"></label><label>Próxima ação<input id="leadNextDate" type="date"></label></div><div class="grid3" style="margin-top:13px"><label>Estágio<select id="leadStage"><option value="lead">Lead identificado</option><option value="conversation">Conversa qualificada</option><option value="demo">Demonstração</option><option value="pilot_offered">Piloto ofertado</option><option value="pilot_paid">Piloto pago</option><option value="contract">Contrato recorrente</option><option value="lost">Perdido / arquivado</option></select></label><label>Implantação potencial (R$)<input id="leadValue" type="number" min="0" step="any" placeholder="Ex.: 12000"></label><label>Dor prioritária<input id="leadPain" placeholder="Ex.: compras emergenciais"></label></div><label style="margin-top:13px">Próxima ação / observações<textarea id="leadNotes" placeholder="Quem decide? O que precisa ser demonstrado? Qual foi a objeção?"></textarea></label><div class="btns no-print" style="margin-top:13px"><button class="success" type="submit">Salvar conta</button><button class="secondary" type="button" id="clearForm">Limpar formulário</button></div></form></section>
+    <section class="card"><div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px"><div><h2>Contas e próximas ações</h2><p class="hint">Priorize contas com demonstração/piloto e próxima ação vencendo. Não conte lead sem dor concreta como validação.</p></div><div class="btns no-print"><button class="secondary" type="button" id="exportCsv">Exportar CSV</button><button class="secondary" type="button" id="copySummary">Copiar resumo</button></div></div><div class="table-wrap"><table><thead><tr><th>Empresa</th><th>Segmento / contato</th><th>Estágio</th><th>Dor</th><th>Próxima ação</th><th>Valor</th><th class="no-print">Ações</th></tr></thead><tbody id="leadTable"></tbody></table><div id="empty" class="empty">Nenhuma conta registrada ainda. Comece pelas empresas que já demonstraram dor e aceitaram conversar.</div></div></section>
+    <footer class="no-print">MetalEstoque PRO · pipeline local, sem envio automático · use o scorecard para registrar resultados de pilotos.</footer>
+  </main>
+  <script>
+    const KEY = "metalestoque_pipeline_pilotos_v1";
+    const STAGES = { lead:"Lead identificado", conversation:"Conversa qualificada", demo:"Demonstração", pilot_offered:"Piloto ofertado", pilot_paid:"Piloto pago", contract:"Contrato recorrente", lost:"Perdido / arquivado" };
+    const STAGE_CLASS = { lead:"stage-lead", conversation:"stage-lead", demo:"stage-demo", pilot_offered:"stage-pilot", pilot_paid:"stage-paid", contract:"stage-contract", lost:"stage-lost" };
+    const $ = id => document.getElementById(id);
+    const money = value => new Intl.NumberFormat("pt-BR", { style:"currency", currency:"BRL", maximumFractionDigits:0 }).format(Number(value) || 0);
+    const escapeHtml = value => String(value ?? "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;");
+    let leads = load();
+    function load() { try { const value = JSON.parse(localStorage.getItem(KEY) || "[]"); return Array.isArray(value) ? value : []; } catch (error) { return []; } }
+    function persist() { localStorage.setItem(KEY, JSON.stringify(leads)); }
+    function formData() { return { company:$("leadCompany").value.trim(), city:$("leadCity").value.trim(), segment:$("leadSegment").value, contact:$("leadContact").value.trim(), champion:$("leadChampion").value.trim(), nextDate:$("leadNextDate").value, stage:$("leadStage").value, value:Number($("leadValue").value) || 0, pain:$("leadPain").value.trim(), notes:$("leadNotes").value.trim() }; }
+    function render() {
+      const tbody = $("leadTable");
+      tbody.innerHTML = leads.map((lead,index) => "<tr><td><strong>" + escapeHtml(lead.company) + "</strong><br><small>" + escapeHtml(lead.city || "") + "</small></td><td>" + escapeHtml(lead.segment) + "<br><small>" + escapeHtml(lead.contact || lead.champion || "sem contato") + "</small></td><td><span class='stage " + (STAGE_CLASS[lead.stage] || "stage-lead") + "'>" + escapeHtml(STAGES[lead.stage] || lead.stage) + "</span></td><td>" + escapeHtml(lead.pain || "—") + "</td><td>" + escapeHtml(lead.nextDate || "—") + "<br><small>" + escapeHtml(lead.notes || "") + "</small></td><td>" + money(lead.value) + "</td><td class='no-print'><div class='actions'><button class='secondary' onclick='editLead(" + index + ")'>Editar</button><button class='secondary' onclick='advanceLead(" + index + ")'>Avançar</button><button class='secondary' onclick='copyLead(" + index + ")'>Copiar</button><button class='danger' onclick='deleteLead(" + index + ")'>Excluir</button></div></td></tr>").join("");
+      $("empty").style.display = leads.length ? "none" : "block";
+      $("metricTotal").textContent = leads.length;
+      $("metricActive").textContent = leads.filter(lead => !["lost","contract"].includes(lead.stage)).length;
+      $("metricPipeline").textContent = money(leads.filter(lead => lead.stage !== "lost").reduce((total,lead) => total + Number(lead.value || 0),0));
+      const next = leads.filter(lead => lead.nextDate && lead.stage !== "lost" && lead.stage !== "contract").sort((a,b) => a.nextDate.localeCompare(b.nextDate))[0];
+      $("metricNext").textContent = next ? next.nextDate : "—";
+    }
+    function resetForm() { $("leadForm").reset(); $("leadId").value = ""; $("leadSegment").value = "Caldeiraria"; $("leadStage").value = "lead"; }
+    function editLead(index) { const lead = leads[index]; if (!lead) return; Object.keys(lead).forEach(key => { if ($("lead" + key.charAt(0).toUpperCase() + key.slice(1))) $("lead" + key.charAt(0).toUpperCase() + key.slice(1)).value = lead[key]; }); $("leadId").value = index; window.scrollTo({ top:0, behavior:"smooth" }); }
+    function advanceLead(index) { const lead = leads[index]; if (!lead) return; const order = ["lead","conversation","demo","pilot_offered","pilot_paid","contract"]; const position = order.indexOf(lead.stage); if (position >= 0 && position < order.length - 1) lead.stage = order[position + 1]; persist(); render(); }
+    function deleteLead(index) { if (!confirm("Excluir esta conta do pipeline local?")) return; leads.splice(index,1); persist(); render(); }
+    async function copyLead(index) { const lead = leads[index]; if (!lead) return; const message = "Olá, " + lead.contact + ". Estou validando o MetalEstoque PRO para " + lead.company + ". A dor prioritária registrada é: " + lead.pain + ". Podemos fazer uma demonstração de 15 minutos e avaliar um piloto de 30 dias?"; try { await navigator.clipboard.writeText(message); alert("Mensagem copiada."); } catch (error) { window.prompt("Copie a mensagem:", message); } }
+    function csvEscape(value) { return "\"" + String(value ?? "").replace(/\"/g,"\"\"") + "\""; }
+    function exportCsv() { const rows = ["Empresa;Cidade;Segmento;Contato;Champion;Estágio;Próxima ação;Valor;Dor;Observações"]; leads.forEach(lead => rows.push([lead.company,lead.city,lead.segment,lead.contact,lead.champion,STAGES[lead.stage] || lead.stage,lead.nextDate,lead.value,lead.pain,lead.notes].map(csvEscape).join(";"))); const blob = new Blob(["\uFEFF" + rows.join("\n")], { type:"text/csv;charset=utf-8" }); const link = document.createElement("a"); link.href = URL.createObjectURL(blob); link.download = "pipeline_pilotos_metalestoque.csv"; link.click(); setTimeout(() => URL.revokeObjectURL(link.href),1000); }
+    function copySummary() { const summary = leads.map(lead => (STAGES[lead.stage] || lead.stage) + " — " + lead.company + " — " + (lead.nextDate || "sem próxima ação") + " — " + money(lead.value)).join("\n") || "Nenhuma conta cadastrada."; navigator.clipboard.writeText(summary).then(() => alert("Resumo copiado.")).catch(() => window.prompt("Copie o resumo:", summary)); }
+    $("leadForm").addEventListener("submit", event => { event.preventDefault(); const data = formData(); if (!data.company) return; const index = $("leadId").value; if (index === "") leads.unshift({ ...data, createdAt:new Date().toISOString() }); else leads[Number(index)] = { ...leads[Number(index)], ...data, updatedAt:new Date().toISOString() }; persist(); resetForm(); render(); });
+    $("clearForm").addEventListener("click", resetForm);
+    $("exportCsv").addEventListener("click", exportCsv);
+    $("copySummary").addEventListener("click", copySummary);
+    render();
+  </script>
+</body>
+</html>

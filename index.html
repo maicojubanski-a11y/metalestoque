@@ -1,0 +1,1389 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MetalEstoque PRO - Gestão Industrial & Almoxarifado</title>
+  <link rel="stylesheet" href="styles.css">
+  <!-- Lucide Icons & Chart.js locais (sem fallback CDN) -->
+  <script src="lib/lucide.min.js"></script>
+  <script src="lib/chart.min.js"></script>
+  <!-- As bibliotecas são locais para garantir funcionamento realmente offline. -->
+</head>
+<body>
+
+  <div class="app-container">
+    <!-- SIDEBAR DE NAVEGAÇÃO -->
+    <aside class="sidebar">
+      <div class="brand-header">
+        <div class="brand-icon">
+          <i data-lucide="anvil"></i>
+        </div>
+        <div>
+          <div class="brand-title">MetalEstoque</div>
+          <div class="brand-subtitle">PRO INDUSTRIAL</div>
+        </div>
+      </div>
+
+      <div class="nav-section-title">Principal</div>
+      <ul class="nav-links">
+        <li class="nav-item active" data-tab="tabDashboard">
+          <button onclick="switchTab('tabDashboard')">
+            <i data-lucide="layout-dashboard"></i>
+            <span>Painel Geral</span>
+          </button>
+        </li>
+        <li class="nav-item" data-tab="tabEstoque">
+          <button onclick="switchTab('tabEstoque')">
+            <i data-lucide="boxes"></i>
+            <span>Almoxarifado</span>
+            <span class="badge-alert badge-alert-count" style="display: none;">0</span>
+          </button>
+        </li>
+        <li class="nav-item" data-tab="tabRetalhos">
+          <button onclick="switchTab('tabRetalhos')">
+            <i data-lucide="scissors"></i>
+            <span>Pátio de Sobras</span>
+          </button>
+        </li>
+        <li class="nav-item" data-tab="tabOP">
+          <button onclick="switchTab('tabOP')">
+            <i data-lucide="cog"></i>
+            <span>Ordens Produção</span>
+          </button>
+        </li>
+        <li class="nav-item" data-tab="tabMovimentacoes">
+          <button onclick="switchTab('tabMovimentacoes')">
+            <i data-lucide="arrow-left-right"></i>
+            <span>Movimentações</span>
+          </button>
+        </li>
+      </ul>
+
+      <div class="nav-section-title">Engenharia & Apoio</div>
+      <ul class="nav-links">
+        <li class="nav-item" data-tab="tabCompras">
+          <button onclick="switchTab('tabCompras')">
+            <i data-lucide="shopping-cart"></i>
+            <span>Necessidade Compras</span>
+            <span class="badge-alert badge-alert-count" style="display: none;">0</span>
+          </button>
+        </li>
+        <li class="nav-item" data-tab="tabCalculadora">
+          <button onclick="switchTab('tabCalculadora')">
+            <i data-lucide="calculator"></i>
+            <span>Calculadora Pesos</span>
+          </button>
+        </li>
+        <li class="nav-item" data-tab="tabEtiquetas">
+          <button onclick="switchTab('tabEtiquetas')">
+            <i data-lucide="qr-code"></i>
+            <span>Etiquetas & QR</span>
+          </button>
+        </li>
+        <li class="nav-item" data-tab="tabConfig">
+          <button onclick="switchTab('tabConfig')">
+            <i data-lucide="settings"></i>
+            <span>Configurações</span>
+          </button>
+        </li>
+      </ul>
+
+      <div class="sidebar-footer">
+        <div class="company-info">
+          <div class="company-avatar">
+            <i data-lucide="factory"></i>
+          </div>
+          <div style="overflow: hidden;">
+            <div id="sidebarCompanyName" style="font-size: 13px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+              Metalmecânica
+            </div>
+            <div id="sidebarCompanyResponsavel" style="font-size: 11px; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+              Almoxarifado
+            </div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- WRAPPER PRINCIPAL -->
+    <main class="main-wrapper">
+      <!-- CABEÇALHO SUPERIOR -->
+      <header class="top-header">
+        <div class="header-left">
+          <button id="menuToggleBtn" class="menu-toggle" title="Menu Lateral">
+            <i data-lucide="menu"></i>
+          </button>
+          <div class="page-title-box">
+            <h1 id="pageTitle">Painel Geral</h1>
+            <p id="pageSubtitle">Visão executiva do estoque e indicadores de produção</p>
+          </div>
+        </div>
+
+        <div class="header-actions">
+          <div class="search-box">
+            <i data-lucide="search" class="search-icon"></i>
+            <input type="text" id="globalSearch" placeholder="Buscar material, código ou corrida (Ctrl+K)...">
+          </div>
+
+          <button class="btn test-mode-btn" onclick="toggleTestMode()" title="Ativar Passo a Passo dos 7 Roteiros de Teste">
+            <i data-lucide="flask-conical"></i> Modo Teste Guiado
+          </button>
+
+          <button class="btn btn-outline" style="border-color: #f43f5e; color: #f43f5e;" onclick="openBugNoteModal()" title="Registrar Bug ou Observação Rápida (Ctrl+B)">
+            <i data-lucide="bug"></i> Anotar Bug / Nota
+          </button>
+
+          <button class="btn btn-outline btn-icon" onclick="toggleTheme()" title="Alternar Modo Escuro/Claro">
+            <i data-lucide="sun" id="themeToggleIcon"></i>
+          </button>
+
+          <a class="btn btn-outline" href="cadastro-inteligente.html" title="Cadastrar peça por foto ou etiqueta">
+            <i data-lucide="scan-line"></i> Cadastro por Foto
+          </a>
+
+          <button class="btn btn-warning" onclick="openMovementModal()">
+            <i data-lucide="arrow-left-right"></i> Movimentação
+          </button>
+
+          <button class="btn btn-primary" onclick="openItemModal()">
+            <i data-lucide="plus"></i> Novo Material
+          </button>
+        </div>
+      </header>
+
+      <!-- CORPO DAS PÁGINAS (TABS) -->
+      <div class="content-body">
+
+        <!-- ==========================================
+             ABA 1: DASHBOARD
+             ========================================== -->
+        <div id="tabDashboard" class="tab-pane active">
+          <!-- KPI CARDS -->
+          <div class="stats-grid">
+            <div class="stat-card stat-blue">
+              <div class="stat-info">
+                <h3>Total de Itens Cadastrados</h3>
+                <div class="stat-value" id="dashTotalItens">0</div>
+                <div class="stat-subtext">Variedade de matérias-primas e peças</div>
+              </div>
+              <div class="stat-icon"><i data-lucide="boxes"></i></div>
+            </div>
+
+            <div class="stat-card stat-green">
+              <div class="stat-info">
+                <h3>Valor Total em Estoque</h3>
+                <div class="stat-value" id="dashTotalValor">R$ 0,00</div>
+                <div class="stat-subtext">Capital imobilizado no almoxarifado</div>
+              </div>
+              <div class="stat-icon"><i data-lucide="badge-dollar-sign"></i></div>
+            </div>
+
+            <div class="stat-card stat-rose">
+              <div class="stat-info">
+                <h3>Itens em Nível Crítico</h3>
+                <div class="stat-value" id="dashItensCriticos">0</div>
+                <div class="stat-subtext">Abaixo do estoque mínimo de segurança</div>
+              </div>
+              <div class="stat-icon"><i data-lucide="alert-triangle"></i></div>
+            </div>
+
+            <div class="stat-card stat-amber">
+              <div class="stat-info">
+                <h3>Ordens de Produção Ativas</h3>
+                <div class="stat-value" id="dashOpsAtivas">0</div>
+                <div class="stat-subtext">Projetos em andamento ou planejados</div>
+              </div>
+              <div class="stat-icon"><i data-lucide="cog"></i></div>
+            </div>
+
+            <div class="stat-card stat-purple">
+              <div class="stat-info">
+                <h3>Sobras & Retalhos Úteis</h3>
+                <div class="stat-value" id="dashRetalhos">0</div>
+                <div class="stat-subtext">Chapas e barras no pátio para reuso</div>
+              </div>
+              <div class="stat-icon"><i data-lucide="scissors"></i></div>
+            </div>
+          </div>
+
+          <!-- GRÁFICOS -->
+          <div class="dashboard-grid">
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title">
+                  <i data-lucide="bar-chart-2"></i> Fluxo Financeiro de Movimentações (Últimos Dias)
+                </div>
+              </div>
+              <div class="card-body" style="height: 280px;">
+                <canvas id="chartMovimentacoes"></canvas>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title">
+                  <i data-lucide="pie-chart"></i> Valor por Categoria
+                </div>
+              </div>
+              <div class="card-body" style="height: 280px;">
+                <canvas id="chartCategorias"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <!-- TABELAS RÁPIDAS DO DASHBOARD -->
+          <div class="dashboard-grid" style="grid-template-columns: 1fr 1fr;">
+            <!-- Itens Críticos -->
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title" style="color: var(--accent-rose);">
+                  <i data-lucide="alert-circle"></i> Alerta de Estoque Mínimo (Ação Necessária)
+                </div>
+                <button class="btn btn-sm btn-outline" onclick="switchTab('tabCompras')">Ver Todos</button>
+              </div>
+              <div class="table-responsive">
+                <table class="custom-table">
+                  <thead>
+                    <tr>
+                      <th>Código</th>
+                      <th>Material</th>
+                      <th>Categoria</th>
+                      <th>Estoque</th>
+                      <th>Ação</th>
+                    </tr>
+                  </thead>
+                  <tbody id="dashAlertasTableBody"></tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Últimas Movimentações -->
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title">
+                  <i data-lucide="history"></i> Últimas Entradas e Saídas
+                </div>
+                <button class="btn btn-sm btn-outline" onclick="switchTab('tabMovimentacoes')">Ver Extrato</button>
+              </div>
+              <div class="table-responsive">
+                <table class="custom-table">
+                  <thead>
+                    <tr>
+                      <th>Tipo</th>
+                      <th>Material</th>
+                      <th>Qtd</th>
+                      <th>Valor</th>
+                      <th>Motivo/OP</th>
+                      <th>Data</th>
+                    </tr>
+                  </thead>
+                  <tbody id="dashMovsTableBody"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==========================================
+             ABA 2: ALMOXARIFADO / ESTOQUE
+             ========================================== -->
+        <div id="tabEstoque" class="tab-pane">
+          <div class="toolbar-container">
+            <div class="toolbar-left">
+              <select id="filterCategory" class="select-control" onchange="renderInventoryTable()">
+                <option value="all">Todas as Categorias</option>
+                <option value="chapas">Chapas Metálicas</option>
+                <option value="tubos_perfis">Tubos, Vigas & Perfis</option>
+                <option value="solda_corte">Solda & Consumíveis</option>
+                <option value="usinagem">Ferramental Usinagem</option>
+                <option value="fixadores">Fixadores & Parafusos</option>
+                <option value="quimicos_oleos">Químicos & Fluidos</option>
+                <option value="epi">EPI & Segurança</option>
+                <option value="semiacabados">Semi-acabados (WIP)</option>
+                <option value="acabados">Produtos Acabados</option>
+              </select>
+
+              <select id="filterStatus" class="select-control" onchange="renderInventoryTable()">
+                <option value="all">Todos os Status</option>
+                <option value="normal">Estoque Normal</option>
+                <option value="alerta">Abaixo do Mínimo</option>
+                <option value="zerado">Estoque Zerado</option>
+              </select>
+
+              <input type="text" id="searchInventory" class="form-control" style="width: 220px;" placeholder="Filtrar por nome, SKU..." oninput="renderInventoryTable()">
+              <span id="inventoryCount" style="font-size: 12px; color: var(--text-muted);"></span>
+            </div>
+
+            <div class="toolbar-right">
+              <button class="btn btn-warning" id="btnToggleInlineEdit" onclick="toggleInlineEditMode()">
+                <i data-lucide="edit-3"></i> <span id="inlineEditBtnText">Modo Edição Rápida</span>
+              </button>
+              <button class="btn btn-outline" onclick="openInventarioRapidoModal()" title="Balanço por leitor de código de barras ou SKU">
+                <i data-lucide="scan-barcode"></i> Contagem Rápida
+              </button>
+              <button class="btn btn-success" onclick="openImportModal()">
+                <i data-lucide="file-up"></i> Importar Planilha (Excel/CSV)
+              </button>
+              <button class="btn btn-outline" onclick="exportarEstoqueCSV()">
+                <i data-lucide="download"></i> Exportar CSV
+              </button>
+              <button class="btn btn-primary" onclick="openItemModal()">
+                <i data-lucide="plus"></i> Novo Material
+              </button>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="table-responsive">
+              <table class="custom-table">
+                <thead>
+                  <tr>
+                    <th>Código / Rastreio</th>
+                    <th>Descrição & Dimensões</th>
+                    <th>Categoria</th>
+                    <th>Localização Física</th>
+                    <th>Estoque / Mín</th>
+                    <th>Status</th>
+                    <th>Custo Unit. / Total</th>
+                    <th>Ações Rápidas</th>
+                  </tr>
+                </thead>
+                <tbody id="inventoryTableBody"></tbody>
+              </table>
+            </div>
+
+            <!-- CONTROLE DE PAGINAÇÃO (SUPORTA 3.000+ ITENS) -->
+            <div class="pagination-container">
+              <div class="pagination-info" id="paginationInfo">
+                Exibindo itens 1 a 50 de 3.000
+              </div>
+              <div class="pagination-controls">
+                <label style="font-size: 12px; color: var(--text-muted); margin-right: 6px;">Itens por pág:</label>
+                <select id="itemsPerPageSelect" class="select-control" style="min-width: 80px; padding: 4px 8px;" onchange="changeItemsPerPage(this.value)">
+                  <option value="25">25</option>
+                  <option value="50" selected>50</option>
+                  <option value="100">100</option>
+                  <option value="250">250</option>
+                  <option value="all">Todos</option>
+                </select>
+                <button class="btn btn-sm btn-outline" id="btnPrevPage" onclick="prevPage()">
+                  <i data-lucide="chevron-left"></i> Anterior
+                </button>
+                <span id="currentPageIndicator" style="font-size: 13px; font-weight: 700; padding: 0 8px;">1 / 1</span>
+                <button class="btn btn-sm btn-outline" id="btnNextPage" onclick="nextPage()">
+                  Próxima <i data-lucide="chevron-right"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==========================================
+             ABA 3: PÁTIO DE RETALHOS & SOBRAS
+             ========================================== -->
+        <div id="tabRetalhos" class="tab-pane">
+          <div class="toolbar-container">
+            <div class="toolbar-left">
+              <span style="font-size: 13.5px; font-weight: 600; color: var(--text-primary);">
+                <i data-lucide="sparkles" style="color: var(--accent-amber); vertical-align: middle;"></i>
+                Gestão de Sobras Úteis & Retalhos Nobres
+              </span>
+              <span id="retalhosCount" style="font-size: 12px; color: var(--accent-cyan); margin-left: 10px;"></span>
+            </div>
+            <div class="toolbar-right">
+              <button class="btn btn-warning" onclick="openRetalhoModal()">
+                <i data-lucide="plus"></i> Cadastrar Sobra / Retalho
+              </button>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">
+                <i data-lucide="layers"></i> Retalhos de Chapas e Pontas de Barra Disponíveis no Pátio
+              </div>
+              <div style="font-size: 12px; color: var(--text-muted);">
+                Consulte esta tabela antes de cortar uma chapa ou barra inteira nova!
+              </div>
+            </div>
+            <div class="table-responsive">
+              <table class="custom-table">
+                <thead>
+                  <tr>
+                    <th>Material / Liga</th>
+                    <th>Dimensões Exatas</th>
+                    <th>Peso Est. (kg)</th>
+                    <th>Localização / Gaiola</th>
+                    <th>Origem / Corte</th>
+                    <th>Status</th>
+                    <th>Ações</th>
+                  </tr>
+                </thead>
+                <tbody id="retalhosTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==========================================
+             ABA 4: ORDENS DE PRODUÇÃO (OP)
+             ========================================== -->
+        <div id="tabOP" class="tab-pane">
+          <div class="toolbar-container">
+            <div class="toolbar-left">
+              <span style="font-size: 14px; font-weight: 600;">
+                <i data-lucide="cpu" style="color: var(--accent-cyan);"></i> Controle de Fabricação e Baixa de Matéria-Prima
+              </span>
+            </div>
+            <div class="toolbar-right">
+              <button class="btn btn-primary" onclick="openOPModal()">
+                <i data-lucide="plus-circle"></i> + Nova Ordem de Produção (OP)
+              </button>
+            </div>
+          </div>
+
+          <div id="opContainer"></div>
+        </div>
+
+        <!-- ==========================================
+             ABA 5: MOVIMENTAÇÕES & HISTÓRICO
+             ========================================== -->
+        <div id="tabMovimentacoes" class="tab-pane">
+          <div class="toolbar-container">
+            <div class="toolbar-left">
+              <select id="filterMovTipo" class="select-control" onchange="renderMovimentacoesTable()">
+                <option value="all">Todos os Tipos</option>
+                <option value="entrada">Entradas (Compras/Devolução)</option>
+                <option value="saida">Saídas (Requisição/Fábrica)</option>
+                <option value="baixa_op">Baixas por Ordem de Produção</option>
+                <option value="ajuste">Ajustes de Inventário</option>
+                <option value="auditoria">Auditoria de Cadastro</option>
+              </select>
+            </div>
+            <div class="toolbar-right">
+              <button class="btn btn-outline" onclick="exportarMovimentacoesCSV()">
+                <i data-lucide="download"></i> Exportar Extrato CSV
+              </button>
+              <button class="btn btn-warning" onclick="openMovementModal()">
+                <i data-lucide="plus"></i> Registrar Movimentação
+              </button>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="table-responsive">
+              <table class="custom-table">
+                <thead>
+                  <tr>
+                    <th>Data / Hora</th>
+                    <th>Tipo</th>
+                    <th>Código SKU</th>
+                    <th>Material</th>
+                    <th>Qtd Movimentada</th>
+                    <th>Valor Total</th>
+                    <th>Motivo / Documento / OP</th>
+                    <th>Responsável</th>
+                  </tr>
+                </thead>
+                <tbody id="movimentacoesTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==========================================
+             ABA 6: NECESSIDADE DE COMPRAS
+             ========================================== -->
+        <div id="tabCompras" class="tab-pane">
+          <div class="toolbar-container">
+            <div class="toolbar-left">
+              <div style="font-size: 13.5px; font-weight: 600;">
+                <i data-lucide="alert-triangle" style="color: var(--accent-rose); vertical-align: middle;"></i>
+                Sugestão Automática de Reposição de Estoque
+              </div>
+            </div>
+            <div class="toolbar-right">
+              <div style="font-size: 13px; margin-right: 12px;">
+                Investimento Estimado: <strong id="comprasTotalSugerido" style="color: var(--accent-cyan); font-size: 15px;">R$ 0,00</strong>
+              </div>
+              <button class="btn btn-success" onclick="exportarRelatorioCompras()">
+                <i data-lucide="file-spreadsheet"></i> Exportar Pedido de Cotação (CSV)
+              </button>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="table-responsive">
+              <table class="custom-table">
+                <thead>
+                  <tr>
+                    <th>Código</th>
+                    <th>Material</th>
+                    <th>Categoria</th>
+                    <th>Estoque Atual / Mínimo</th>
+                    <th>Qtd Sugerida Comprar</th>
+                    <th>Fornecedor Homologado</th>
+                    <th>Custo Estimado</th>
+                  </tr>
+                </thead>
+                <tbody id="comprasTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==========================================
+             ABA 7: CALCULADORA METALMECÂNICA
+             ========================================== -->
+        <div id="tabCalculadora" class="tab-pane">
+          <div class="calc-panel">
+            <h2 style="font-size: 18px; margin-bottom: 6px; display: flex; align-items: center; gap: 8px;">
+              <i data-lucide="calculator" style="color: var(--accent-cyan);"></i> Calculadora de Peso Teórico de Metais
+            </h2>
+            <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 20px;">
+              Calcule com precisão de engenharia o peso de chapas, tubos redondos, tubos industriais e tarugos maciços para lançar entradas de NF ou orçamentos.
+            </p>
+
+            <div class="calc-type-selector">
+              <button class="calc-tab-btn active" data-mode="chapa" onclick="setCalcMode('chapa')">
+                <i data-lucide="square"></i> Chapa / Bobina
+              </button>
+              <button class="calc-tab-btn" data-mode="tubo" onclick="setCalcMode('tubo')">
+                <i data-lucide="circle"></i> Tubo Redondo
+              </button>
+              <button class="calc-tab-btn" data-mode="perfil" onclick="setCalcMode('perfil')">
+                <i data-lucide="box"></i> Tubo Quadrado / Retangular (Metalão)
+              </button>
+              <button class="calc-tab-btn" data-mode="tarugo" onclick="setCalcMode('tarugo')">
+                <i data-lucide="cylinder"></i> Tarugo Maciço Redondo
+              </button>
+            </div>
+
+            <!-- Material / Densidade -->
+            <div style="margin-bottom: 20px; max-width: 320px;">
+              <label style="font-size: 12px; font-weight: 600; display: block; margin-bottom: 6px; color: var(--text-secondary);">
+                Material / Liga Metálica (Densidade):
+              </label>
+              <select id="calcDensidade" class="select-control" style="width: 100%;" onchange="calcularPesoMetal()">
+                <option value="7.85">Aço Carbono / Aço Liga (7.85 g/cm³)</option>
+                <option value="7.93">Aço Inoxidável 304 / 316 (7.93 g/cm³)</option>
+                <option value="2.70">Alumínio (2.70 g/cm³)</option>
+                <option value="8.96">Cobre Eletrolítico (8.96 g/cm³)</option>
+                <option value="8.50">Latão (8.50 g/cm³)</option>
+                <option value="7.20">Ferro Fundido (7.20 g/cm³)</option>
+              </select>
+            </div>
+
+            <!-- Inputs Chapa -->
+            <div id="calcChapaInputs" class="form-grid" style="display: grid;">
+              <div class="form-group">
+                <label>Espessura (mm):</label>
+                <input type="number" id="calcChapaEsp" class="form-control" value="6.35" step="any" oninput="calcularPesoMetal()">
+              </div>
+              <div class="form-group">
+                <label>Largura (mm):</label>
+                <input type="number" id="calcChapaLarg" class="form-control" value="1200" step="any" oninput="calcularPesoMetal()">
+              </div>
+              <div class="form-group">
+                <label>Comprimento (mm):</label>
+                <input type="number" id="calcChapaComp" class="form-control" value="3000" step="any" oninput="calcularPesoMetal()">
+              </div>
+              <div class="form-group">
+                <label>Quantidade de Chapas:</label>
+                <input type="number" id="calcChapaQtd" class="form-control" value="1" min="1" oninput="calcularPesoMetal()">
+              </div>
+            </div>
+
+            <!-- Inputs Tubo Redondo -->
+            <div id="calcTuboInputs" class="form-grid" style="display: none;">
+              <div class="form-group">
+                <label>Diâmetro Externo DE (mm):</label>
+                <input type="number" id="calcTuboDE" class="form-control" value="50.8" step="any" oninput="calcularPesoMetal()">
+              </div>
+              <div class="form-group">
+                <label>Espessura da Parede (mm):</label>
+                <input type="number" id="calcTuboParede" class="form-control" value="2.0" step="any" oninput="calcularPesoMetal()">
+              </div>
+              <div class="form-group">
+                <label>Comprimento da Barra (metros):</label>
+                <input type="number" id="calcTuboComp" class="form-control" value="6.0" step="any" oninput="calcularPesoMetal()">
+              </div>
+              <div class="form-group">
+                <label>Quantidade de Barras:</label>
+                <input type="number" id="calcTuboQtd" class="form-control" value="1" min="1" oninput="calcularPesoMetal()">
+              </div>
+            </div>
+
+            <!-- Inputs Tubo Quadrado / Perfil -->
+            <div id="calcPerfilInputs" class="form-grid" style="display: none;">
+              <div class="form-group">
+                <label>Largura A (mm):</label>
+                <input type="number" id="calcPerfilLarg" class="form-control" value="50" step="any" oninput="calcularPesoMetal()">
+              </div>
+              <div class="form-group">
+                <label>Altura B (mm):</label>
+                <input type="number" id="calcPerfilAlt" class="form-control" value="50" step="any" oninput="calcularPesoMetal()">
+              </div>
+              <div class="form-group">
+                <label>Espessura Parede (mm):</label>
+                <input type="number" id="calcPerfilParede" class="form-control" value="2.65" step="any" oninput="calcularPesoMetal()">
+              </div>
+              <div class="form-group">
+                <label>Comprimento da Barra (metros):</label>
+                <input type="number" id="calcPerfilComp" class="form-control" value="6.0" step="any" oninput="calcularPesoMetal()">
+              </div>
+              <div class="form-group">
+                <label>Quantidade de Barras:</label>
+                <input type="number" id="calcPerfilQtd" class="form-control" value="1" min="1" step="any" oninput="calcularPesoMetal()">
+              </div>
+            </div>
+
+            <!-- Inputs Tarugo Maciço -->
+            <div id="calcTarugoInputs" class="form-grid" style="display: none;">
+              <div class="form-group">
+                <label>Diâmetro Redondo (mm):</label>
+                <input type="number" id="calcTarugoDiam" class="form-control" value="76.2" step="any" oninput="calcularPesoMetal()">
+              </div>
+              <div class="form-group">
+                <label>Comprimento (metros):</label>
+                <input type="number" id="calcTarugoComp" class="form-control" value="1.0" step="any" oninput="calcularPesoMetal()">
+              </div>
+              <div class="form-group">
+                <label>Quantidade:</label>
+                <input type="number" id="calcTarugoQtd" class="form-control" value="1" min="1" oninput="calcularPesoMetal()">
+              </div>
+            </div>
+
+            <!-- Resultado -->
+            <div class="calc-result-box">
+              <div>
+                <div style="font-size: 13px; font-weight: 600; text-transform: uppercase; color: var(--text-secondary);">
+                  Peso Teórico Total Calculado:
+                </div>
+                <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">
+                  Baseado nas normas ABNT / ASTM da indústria metalmecânica
+                </div>
+              </div>
+              <div class="calc-result-number" id="calcResultPeso">
+                179.69 kg
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==========================================
+             ABA 8: ETIQUETAS & QR CODE
+             ========================================== -->
+        <div id="tabEtiquetas" class="tab-pane">
+          <div class="toolbar-container no-print">
+            <div class="toolbar-left">
+              <span style="font-size: 14px; font-weight: 600;">
+                <i data-lucide="tag" style="color: var(--accent-cyan);"></i> Etiquetas Industriais para Almoxarifado e Paletes
+              </span>
+            </div>
+            <div class="toolbar-right">
+              <button class="btn btn-primary" onclick="window.print()">
+                <i data-lucide="printer"></i> Imprimir em Lote (A4 / Térmica)
+              </button>
+            </div>
+          </div>
+
+          <div class="label-preview-container" id="etiquetasPreviewContainer"></div>
+        </div>
+
+        <!-- ==========================================
+             ABA 9: CONFIGURAÇÕES & BACKUP
+             ========================================== -->
+        <div id="tabConfig" class="tab-pane">
+          <div class="dashboard-grid" style="grid-template-columns: 1.2fr 1fr;">
+            <!-- Dados da Empresa -->
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title">
+                  <i data-lucide="building-2"></i> Identificação da Metalmecânica
+                </div>
+              </div>
+              <div class="card-body">
+                <form id="formConfig" class="form-grid">
+                  <div class="form-group col-span-2">
+                    <label>Razão Social:</label>
+                    <input type="text" id="cfgRazao" class="form-control" required>
+                  </div>
+                  <div class="form-group">
+                    <label>Nome Fantasia:</label>
+                    <input type="text" id="cfgFantasia" class="form-control" required>
+                  </div>
+                  <div class="form-group">
+                    <label>CNPJ:</label>
+                    <input type="text" id="cfgCnpj" class="form-control">
+                  </div>
+                  <div class="form-group col-span-2">
+                    <label>Responsável pelo Almoxarifado / Chão de Fábrica:</label>
+                    <input type="text" id="cfgResponsavel" class="form-control" required>
+                  </div>
+                  <div class="form-group col-span-2" style="margin-top: 10px;">
+                    <button type="submit" class="btn btn-primary">
+                      <i data-lucide="save"></i> Salvar Informações
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+
+            <!-- Segurança & Backup de Dados -->
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title">
+                  <i data-lucide="shield"></i> Backup & Integridade de Dados
+                </div>
+              </div>
+              <div class="card-body" style="display: flex; flex-direction: column; gap: 16px;">
+                <p style="font-size: 13px; color: var(--text-secondary);">
+                  Os dados ficam armazenados de forma persistente e segura no seu navegador. Você pode gerar backups em arquivo a qualquer momento:
+                </p>
+
+                <button class="btn btn-primary" onclick="exportarBackupJSON()">
+                  <i data-lucide="download"></i> Fazer Backup Completo (Download .JSON)
+                </button>
+
+                <div style="border-top: 1px solid var(--border-color); padding-top: 14px;">
+                  <label style="font-size: 12.5px; font-weight: 600; display: block; margin-bottom: 8px;">
+                    Restaurar Backup Anterior:
+                  </label>
+                  <input type="file" id="inputImportBackup" accept=".json" class="form-control" onchange="importarBackupJSON(event)">
+                </div>
+
+                <div style="border-top: 1px solid var(--border-color); padding-top: 14px; display: flex; gap: 8px;">
+                  <button class="btn btn-outline btn-sm" onclick="resetarSistemaPadrao()">
+                    <i data-lucide="rotate-ccw"></i> Restaurar Catálogo Padrão
+                  </button>
+                  <button class="btn btn-danger btn-sm" onclick="limparTudoSistema()">
+                    <i data-lucide="trash-2"></i> Limpar Tudo (Do Zero)
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- ==========================================
+       MODAIS
+       ========================================== -->
+
+  <!-- MODAL: CADASTRAR / EDITAR ITEM -->
+  <div class="modal-overlay" id="modalItem">
+    <div class="modal-container">
+      <div class="modal-header">
+        <div class="modal-title" id="modalItemTitle">Cadastrar Material</div>
+        <button class="modal-close" onclick="closeItemModal()"><i data-lucide="x"></i></button>
+      </div>
+      <form id="formItem">
+        <div class="modal-body">
+          <input type="hidden" id="itemId">
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Código / SKU:</label>
+              <input type="text" id="itemSku" class="form-control" placeholder="ex: CHP-1020-001" required>
+            </div>
+            <div class="form-group">
+              <label>Categoria:</label>
+              <select id="itemCategoria" class="form-control" required>
+                <option value="chapas">Chapas Metálicas</option>
+                <option value="tubos_perfis">Tubos, Vigas & Perfis</option>
+                <option value="solda_corte">Solda & Consumíveis</option>
+                <option value="usinagem">Ferramental Usinagem</option>
+                <option value="fixadores">Fixadores & Parafusos</option>
+                <option value="quimicos_oleos">Químicos & Fluidos</option>
+                <option value="epi">EPI & Segurança</option>
+                <option value="semiacabados">Semi-acabados (WIP)</option>
+                <option value="acabados">Produtos Acabados</option>
+              </select>
+            </div>
+
+            <div class="form-group col-span-2">
+              <label>Descrição Técnica do Material:</label>
+              <input type="text" id="itemNome" class="form-control" placeholder="ex: Chapa Aço Carbono SAE 1020 1/4\" (6.35mm)" required>
+            </div>
+
+            <div class="form-group">
+              <label>Dimensões / Bitola:</label>
+              <input type="text" id="itemDimensoes" class="form-control" placeholder="ex: 6.35 x 1200 x 3000 mm">
+            </div>
+            <div class="form-group">
+              <label>Norma / Material:</label>
+              <input type="text" id="itemMaterial" class="form-control" placeholder="ex: SAE 1020 / ASTM A36">
+            </div>
+
+            <div class="form-group">
+              <label>Nº Corrida / Certificado Usina:</label>
+              <input type="text" id="itemCorrida" class="form-control" placeholder="ex: G-84920 (Gerdau)">
+            </div>
+            <div class="form-group">
+              <label>Localização Almoxarifado / Pátio:</label>
+              <input type="text" id="itemLocalizacao" class="form-control" placeholder="ex: Pátio Chapas - Gaveto 02">
+            </div>
+
+            <div class="form-group">
+              <label>Unidade de Medida:</label>
+              <select id="itemUnidade" class="form-control" required>
+                <option value="chapa">chapa</option>
+                <option value="barra">barra</option>
+                <option value="m">metros (m)</option>
+                <option value="kg">quilos (kg)</option>
+                <option value="un">unidades (un)</option>
+                <option value="cx">caixa (cx)</option>
+                <option value="lt">litros (lt)</option>
+                <option value="cilindro">cilindro</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Custo Unitário (R$):</label>
+              <input type="number" id="itemCustoUnitario" step="0.01" class="form-control" placeholder="0,00" required>
+            </div>
+
+            <div class="form-group">
+              <label>Estoque Atual:</label>
+              <input type="number" id="itemEstoqueAtual" step="any" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label>Estoque Mínimo (Alerta):</label>
+              <input type="number" id="itemEstoqueMinimo" step="any" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label>Estoque Máximo:</label>
+              <input type="number" id="itemEstoqueMaximo" step="any" class="form-control">
+            </div>
+            <div class="form-group">
+              <label>Fornecedor Homologado:</label>
+              <input type="text" id="itemFornecedor" class="form-control" placeholder="ex: Aços Gerdau">
+            </div>
+
+            <div class="form-group col-span-2">
+              <label>Observações Técnicas / Aplicação:</label>
+              <textarea id="itemObs" class="form-control" placeholder="Detalhes adicionais, tolerâncias, certificações..."></textarea>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" onclick="closeItemModal()">Cancelar</button>
+          <button type="submit" class="btn btn-primary"><i data-lucide="save"></i> Salvar Material</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: LANÇAR MOVIMENTAÇÃO -->
+  <div class="modal-overlay" id="modalMovement">
+    <div class="modal-container">
+      <div class="modal-header">
+        <div class="modal-title"><i data-lucide="arrow-left-right"></i> Registrar Movimentação de Estoque</div>
+        <button class="modal-close" onclick="closeMovementModal()"><i data-lucide="x"></i></button>
+      </div>
+      <form id="formMovement">
+        <div class="modal-body">
+          <div class="form-grid">
+            <div class="form-group col-span-2">
+              <label>Selecione o Material:</label>
+              <select id="movItemId" class="form-control" onchange="onMovementItemChange()" required></select>
+              <span id="movItemInfo" class="form-hint" style="color: var(--accent-cyan);"></span>
+            </div>
+
+            <div class="form-group">
+              <label>Tipo de Operação:</label>
+              <select id="movTipo" class="form-control" required>
+                <option value="entrada">Entrada (+ Compra / Devolução)</option>
+                <option value="saida">Saída (- Consumo / Fábrica)</option>
+                <option value="baixa_op">Baixa de Ordem de Produção (- OP)</option>
+                <option value="ajuste">Ajuste de Balanço / Inventário</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label>Quantidade (<span id="movUnidadeLabel">un</span>):</label>
+              <input type="number" id="movQuantidade" step="any" min="0.01" class="form-control" required>
+            </div>
+
+            <div class="form-group">
+              <label>Custo Unitário (R$):</label>
+              <input type="number" id="movCustoUnitario" step="0.01" class="form-control">
+            </div>
+
+            <div class="form-group">
+              <label>Motivo / Documento / Nº OP:</label>
+              <input type="text" id="movMotivo" class="form-control" placeholder="ex: NF-e 18492 ou OP-2026-042" required>
+            </div>
+
+            <div class="form-group col-span-2">
+              <label>Operador / Responsável pela Baixa:</label>
+              <input type="text" id="movResponsavel" class="form-control" required>
+            </div>
+
+            <div class="form-group col-span-2">
+              <label>Observações:</label>
+              <textarea id="movObs" class="form-control" placeholder="Informações complementares..."></textarea>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" onclick="closeMovementModal()">Cancelar</button>
+          <button type="submit" class="btn btn-warning"><i data-lucide="check"></i> Confirmar Lançamento</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: NOVA ORDEM DE PRODUÇÃO -->
+  <div class="modal-overlay" id="modalOP">
+    <div class="modal-container" style="max-width: 800px;">
+      <div class="modal-header">
+        <div class="modal-title"><i data-lucide="cpu"></i> Nova Ordem de Produção (OP)</div>
+        <button class="modal-close" onclick="closeOPModal()"><i data-lucide="x"></i></button>
+      </div>
+      <form id="formOP">
+        <div class="modal-body">
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Número da OP:</label>
+              <input type="text" id="opNumero" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label>Cliente:</label>
+              <input type="text" id="opCliente" class="form-control" placeholder="ex: Usina Agrovale S/A" required>
+            </div>
+
+            <div class="form-group col-span-2">
+              <label>Projeto / Equipamento a Fabricar:</label>
+              <input type="text" id="opProjeto" class="form-control" placeholder="ex: Tanque Metálico 10m³ ou Chassi Agrícola" required>
+            </div>
+
+            <div class="form-group">
+              <label>Data de Início:</label>
+              <input type="date" id="opDataInicio" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label>Previsão de Entrega:</label>
+              <input type="date" id="opPrevisaoEntrega" class="form-control" required>
+            </div>
+
+            <!-- Produto Acabado -->
+            <div class="form-group col-span-2" style="background: rgba(6, 182, 212, 0.08); padding: 12px; border-radius: 8px; border: 1px solid rgba(6, 182, 212, 0.2);">
+              <label style="color: var(--accent-cyan); font-weight: 700;">Produto Acabado Resultante:</label>
+              <div style="display: flex; gap: 10px; margin-top: 6px;">
+                <input type="text" id="opProdNome" class="form-control" placeholder="Nome do Produto Acabado" required style="flex: 2;">
+                <input type="number" id="opProdQtd" class="form-control" value="1" min="1" placeholder="Qtd" required style="flex: 0.5;">
+                <select id="opProdUn" class="form-control" style="flex: 0.8;">
+                  <option value="un">un</option>
+                  <option value="conjunto">conjunto</option>
+                  <option value="peça">peça</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Lista de Materiais da OP -->
+            <div class="form-group col-span-2">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                <label style="font-weight: 700;">Lista de Materiais Requeridos (BOM):</label>
+                <button type="button" class="btn btn-sm btn-outline" onclick="addOPMaterialRow()">
+                  <i data-lucide="plus"></i> Adicionar Item
+                </button>
+              </div>
+              <table style="width: 100%;" class="custom-table">
+                <thead>
+                  <tr>
+                    <th>Material do Estoque</th>
+                    <th>Qtd</th>
+                    <th>Unidade</th>
+                    <th style="width: 40px;"></th>
+                  </tr>
+                </thead>
+                <tbody id="opMateriaisTableBody"></tbody>
+              </table>
+            </div>
+
+            <div class="form-group col-span-2">
+              <label>Observações da Fabricação:</label>
+              <textarea id="opObservacoes" class="form-control" placeholder="Normas de solda, acabamento superficial, tolerâncias..."></textarea>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" onclick="closeOPModal()">Cancelar</button>
+          <button type="submit" class="btn btn-primary"><i data-lucide="save"></i> Criar Ordem de Produção</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: CADASTRAR RETALHO -->
+  <div class="modal-overlay" id="modalRetalho">
+    <div class="modal-container">
+      <div class="modal-header">
+        <div class="modal-title"><i data-lucide="scissors"></i> Cadastrar Retalho / Sobra de Corte</div>
+        <button class="modal-close" onclick="closeRetalhoModal()"><i data-lucide="x"></i></button>
+      </div>
+      <form id="formRetalho">
+        <div class="modal-body">
+          <div class="form-grid">
+            <div class="form-group col-span-2">
+              <label>Material / Liga:</label>
+              <input type="text" id="retMaterial" class="form-control" placeholder="ex: Chapa Aço SAE 1020 3/8\" (9.52mm)" required>
+            </div>
+            <div class="form-group">
+              <label>Dimensões Exatas do Pedaço:</label>
+              <input type="text" id="retDimensoes" class="form-control" placeholder="ex: 450 x 600 mm ou Ø 3\" x 250mm" required>
+            </div>
+            <div class="form-group">
+              <label>Peso Estimado (kg):</label>
+              <input type="number" id="retPeso" step="any" class="form-control" placeholder="ex: 18.5" required>
+            </div>
+            <div class="form-group">
+              <label>Localização no Pátio / Gaiola:</label>
+              <input type="text" id="retLocalizacao" class="form-control" placeholder="ex: Gaiola Sobras Nobres Vão A" required>
+            </div>
+            <div class="form-group">
+              <label>Origem / Sobra de qual OP:</label>
+              <input type="text" id="retOrigem" class="form-control" placeholder="ex: Sobra corte mesa plasma OP-2026-01">
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" onclick="closeRetalhoModal()">Cancelar</button>
+          <button type="submit" class="btn btn-warning"><i data-lucide="save"></i> Salvar Sobra no Pátio</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: IMPORTAÇÃO EM MASSA (EXCEL / CSV) -->
+  <div class="modal-overlay" id="modalImportarMassa">
+    <div class="modal-container" style="max-width: 720px;">
+      <div class="modal-header">
+        <div class="modal-title"><i data-lucide="file-spreadsheet"></i> Importar Estoque em Massa (Até 10.000 Itens)</div>
+        <button class="modal-close" onclick="closeImportModal()"><i data-lucide="x"></i></button>
+      </div>
+      <div class="modal-body">
+        <div style="background: rgba(6, 182, 212, 0.1); border: 1px solid rgba(6, 182, 212, 0.3); border-radius: 8px; padding: 14px; margin-bottom: 18px; font-size: 13px;">
+          <strong><i data-lucide="info" style="width: 14px; height: 14px; vertical-align: middle;"></i> Como funciona a importação em massa:</strong>
+          <p style="margin-top: 6px; color: var(--text-secondary); line-height: 1.4;">
+            Você pode importar 500, 3.000 ou mais de 10.000 itens de uma só vez a partir de planilhas exportadas do seu sistema anterior ou do Excel. Baixe nosso modelo pronto com colunas configuradas.
+          </p>
+          <div style="margin-top: 10px;">
+            <button type="button" class="btn btn-sm btn-outline" onclick="baixarModeloImportacaoCSV()">
+              <i data-lucide="download"></i> 📥 Baixar Planilha Modelo (.CSV para Excel)
+            </button>
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 16px;">
+          <label>Modo de Importação:</label>
+          <div style="display: flex; gap: 20px; margin-top: 6px;">
+            <label style="display: flex; align-items: center; gap: 8px; font-size: 13px; cursor: pointer;">
+              <input type="radio" name="importMode" value="merge" checked>
+              <span><strong>Mesclar / Atualizar:</strong> Cadastra itens novos e atualiza estoque/custo dos já existentes</span>
+            </label>
+          </div>
+          <div style="display: flex; gap: 20px; margin-top: 6px;">
+            <label style="display: flex; align-items: center; gap: 8px; font-size: 13px; cursor: pointer; color: var(--accent-rose);">
+              <input type="radio" name="importMode" value="replace">
+              <span><strong>Substituir Tudo:</strong> Zera o catálogo atual e cadastra exclusivamente a nova planilha</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Selecione a Planilha (.CSV):</label>
+          <div class="dropzone-box" onclick="document.getElementById('fileImportInput').click()">
+            <i data-lucide="upload-cloud" style="width: 38px; height: 38px; color: var(--accent-cyan); margin-bottom: 8px;"></i>
+            <div style="font-size: 14px; font-weight: 600;">Clique para escolher ou arraste o arquivo CSV aqui</div>
+            <div style="font-size: 11.5px; color: var(--text-muted); margin-top: 4px;">Separador ponto-e-vírgula (;) ou vírgula (,)</div>
+            <input type="file" id="fileImportInput" accept=".csv, .txt" style="display: none;" onchange="handleFileSelect(event)">
+          </div>
+        </div>
+
+        <div id="importFileStats" style="display: none; margin-top: 14px; padding: 12px; background: var(--bg-tertiary); border-radius: 8px; font-size: 13px;">
+          <div>Arquivo: <strong id="importFileName">-</strong></div>
+          <div>Linhas identificadas: <strong id="importFileLines" style="color: var(--accent-cyan);">0</strong></div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline" onclick="closeImportModal()">Cancelar</button>
+        <button type="button" class="btn btn-success" id="btnProcessImport" onclick="processImport()" disabled>
+          <i data-lucide="check-circle"></i> Iniciar Importação em Massa
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: CONTAGEM RÁPIDA / BALANÇO POR CÓDIGO DE BARRAS -->
+  <div class="modal-overlay" id="modalInventarioRapido">
+    <div class="modal-container" style="max-width: 640px;">
+      <div class="modal-header">
+        <div class="modal-title"><i data-lucide="scan-barcode"></i> Contagem Rápida / Balanço de Estoque</div>
+        <button class="modal-close" onclick="closeInventarioRapidoModal()"><i data-lucide="x"></i></button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 14px;">
+          Bipe com leitor de código de barras ou digite o código/SKU. Pressione Enter para salvar e pular para o próximo!
+        </p>
+
+        <div style="display: flex; gap: 8px; margin-bottom: 16px;">
+          <input type="text" id="quickScanInput" class="form-control" placeholder="Bipe o código de barras ou digite SKU..." style="font-size: 15px; font-weight: bold;" onkeydown="if(event.key==='Enter') searchQuickItem()">
+          <button type="button" class="btn btn-primary" onclick="searchQuickItem()">
+            <i data-lucide="search"></i> Localizar
+          </button>
+        </div>
+
+        <div id="quickItemResult" style="display: none; background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: 8px; padding: 16px; margin-bottom: 16px;">
+          <div style="font-size: 12px; color: var(--accent-cyan); font-weight: 700;" id="quickSku">SKU</div>
+          <div style="font-size: 16px; font-weight: 700; margin: 4px 0;" id="quickNome">Nome do Item</div>
+          <div style="display: flex; gap: 20px; font-size: 12px; color: var(--text-secondary); margin-bottom: 12px;">
+            <div>Local: <strong id="quickLoc">-</strong></div>
+            <div>Saldo Sistema: <strong id="quickAtual" style="color: var(--accent-amber);">-</strong></div>
+          </div>
+
+          <div class="form-group">
+            <label style="font-weight: 700; color: var(--text-primary);">Nova Quantidade Física Contada:</label>
+            <div style="display: flex; gap: 8px;">
+              <input type="number" id="quickNewQtd" class="form-control" style="font-size: 16px; font-weight: 700; max-width: 140px;" onkeydown="if(event.key==='Enter') saveQuickCount()">
+              <button type="button" class="btn btn-success" onclick="saveQuickCount()">
+                <i data-lucide="check"></i> Confirmar Saldo (Enter)
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div style="font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 6px;">
+          Itens ajustados nesta sessão:
+        </div>
+        <div id="quickScanLog" style="max-height: 140px; overflow-y: auto; font-size: 12px; background: rgba(0,0,0,0.15); border-radius: 6px; padding: 8px;">
+          <span style="color: var(--text-muted);">Nenhum item ajustado ainda.</span>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline" onclick="closeInventarioRapidoModal()">Concluir e Fechar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- WIDGET FLUTUANTE: MODO TESTE GUIADO (INTERATIVO) -->
+  <div id="guidedTestDrawer" class="test-drawer" style="display: none;">
+    <div class="test-drawer-header" onclick="toggleTestDrawerMinimize()">
+      <div class="test-drawer-title">
+        <i data-lucide="flask-conical" style="color: #ec4899;"></i>
+        <span>Modo Teste Guiado</span>
+      </div>
+      <div style="display: flex; gap: 4px;">
+        <button class="btn btn-sm btn-outline" style="padding: 2px 6px;" title="Minimizar/Expandir">_</button>
+        <button class="btn btn-sm btn-outline" style="padding: 2px 6px;" onclick="event.stopPropagation(); closeTestMode()" title="Fechar Modo Teste">✕</button>
+      </div>
+    </div>
+
+    <div class="test-drawer-body">
+      <!-- Seletor de Roteiro -->
+      <div>
+        <label style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">
+          Escolha o Roteiro para Executar:
+        </label>
+        <select id="guidedTestScenarioSelect" class="select-control" style="width: 100%; margin-top: 4px;" onchange="loadGuidedScenario(this.value)">
+          <option value="1">Roteiro 1: Carga 3.000 Itens (Planilha)</option>
+          <option value="2">Roteiro 2: Entrada ISO 9001 (Corrida)</option>
+          <option value="3">Roteiro 3: Baixa de Materiais OP (BOM)</option>
+          <option value="4">Roteiro 4: Aproveitamento de Sobras</option>
+          <option value="5">Roteiro 5: Calculadora de Metais</option>
+          <option value="6">Roteiro 6: Inventário (Grade & Bipagem)</option>
+          <option value="7">Roteiro 7: Ponto de Encomenda & Cotação</option>
+        </select>
+      </div>
+
+      <!-- Barra de Progresso -->
+      <div>
+        <div style="display: flex; justify-content: space-between; font-size: 11.5px; margin-bottom: 4px;">
+          <span>Progresso:</span>
+          <strong id="testProgressText" style="color: #ec4899;">0 / 3 (0%)</strong>
+        </div>
+        <div class="test-progress-bar-bg">
+          <div id="testProgressBarFill" class="test-progress-bar-fill"></div>
+        </div>
+      </div>
+
+      <!-- Card da Etapa Atual -->
+      <div id="testCurrentStepCard" class="step-active-card">
+        <div style="font-size: 11px; font-weight: 700; color: #a78bfa; text-transform: uppercase; margin-bottom: 4px;" id="testStepNumber">
+          Etapa 1 de 3
+        </div>
+        <div style="font-size: 14px; font-weight: 700; color: var(--text-primary); margin-bottom: 6px;" id="testStepTitle">
+          Título da Etapa
+        </div>
+        <p style="font-size: 12.5px; color: var(--text-secondary); line-height: 1.4; margin-bottom: 10px;" id="testStepDesc">
+          Instruções da etapa...
+        </p>
+
+        <!-- REGISTRO DIRETO VINCULADO À ETAPA ATUAL -->
+        <div style="background: rgba(0, 0, 0, 0.25); border: 1px dashed rgba(244, 63, 94, 0.4); border-radius: 6px; padding: 8px 10px; margin-bottom: 12px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+            <label style="font-size: 10.5px; font-weight: 700; color: #fb7185; margin: 0;">
+              <i data-lucide="message-square-plus" style="width: 11px; height: 11px; vertical-align: middle;"></i> Anotar Bug / Observação desta etapa:
+            </label>
+            <select id="stepBugType" class="select-control" style="font-size: 10px; padding: 2px 4px; min-width: 90px;">
+              <option value="doubt">⚠️ Dúvida/Hesitou</option>
+              <option value="bug">🐛 Bug/Erro</option>
+              <option value="idea">💡 Sugestão</option>
+              <option value="praise">⭐ Ponto Forte</option>
+            </select>
+          </div>
+          <div style="display: flex; gap: 6px;">
+            <input type="text" id="stepBugInput" class="form-control" placeholder="O que o testador falou ou onde travou..." style="font-size: 11.5px; padding: 5px 8px;" onkeydown="if(event.key==='Enter') saveCurrentStepBugNote()">
+            <button type="button" class="btn btn-sm btn-danger" style="padding: 5px 10px;" onclick="saveCurrentStepBugNote()" title="Gravar nota desta etapa">
+              <i data-lucide="plus"></i>
+            </button>
+          </div>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px;">
+          <button type="button" class="btn btn-sm btn-outline" onclick="highlightCurrentStepElement()" id="btnHighlightElement">
+            <i data-lucide="crosshair"></i> Onde Clicar?
+          </button>
+          <button type="button" class="btn btn-sm btn-success" onclick="completeCurrentTestStep()">
+            <i data-lucide="check"></i> Concluir Etapa
+          </button>
+        </div>
+      </div>
+
+      <!-- Lista de Checklist das Etapas -->
+      <div>
+        <div style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 6px;">
+          Etapas deste Roteiro:
+        </div>
+        <ul id="testStepsChecklist" class="step-checklist"></ul>
+      </div>
+
+      <!-- SEÇÃO: DIÁRIO DE BUGS E OBSERVAÇÕES DURANTE O TESTE -->
+      <div style="border-top: 1px solid var(--border-color); padding-top: 10px; margin-top: 6px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+          <span style="font-size: 11px; font-weight: 700; color: #fb7185; text-transform: uppercase;">
+            <i data-lucide="bug" style="width: 12px; height: 12px; vertical-align: middle;"></i> Anotar Bug / Feedback:
+          </span>
+          <button type="button" class="btn btn-sm btn-outline" style="font-size: 10.5px; padding: 2px 7px;" onclick="toggleTestBugList()">
+            Ver Notas (<span id="testBugCount">0</span>)
+          </button>
+        </div>
+
+        <!-- Formulário Rápido de Bug/Observação -->
+        <div id="testQuickBugForm" style="display: flex; flex-direction: column; gap: 6px;">
+          <div style="display: flex; gap: 6px;">
+            <select id="quickBugType" class="select-control" style="font-size: 11px; padding: 4px 6px; flex: 1.2;">
+              <option value="bug">🐛 Bug / Erro</option>
+              <option value="idea">💡 Ideia / Melhoria</option>
+              <option value="doubt">⚠️ Dúvida do Usuário</option>
+              <option value="praise">⭐ Ponto Forte</option>
+            </select>
+            <select id="quickBugSeverity" class="select-control" style="font-size: 11px; padding: 4px 6px; flex: 0.8;">
+              <option value="media">Média</option>
+              <option value="alta">Alta (Crítica)</option>
+              <option value="baixa">Baixa</option>
+            </select>
+          </div>
+          <div style="display: flex; gap: 6px;">
+            <input type="text" id="quickBugText" class="form-control" placeholder="O que aconteceu ou o que ele disse..." style="font-size: 12px; padding: 6px 8px;" onkeydown="if(event.key==='Enter') saveQuickBugNote()">
+            <button type="button" class="btn btn-sm btn-danger" style="padding: 6px 10px;" onclick="saveQuickBugNote()">
+              <i data-lucide="plus"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Lista de Bugs Gravados (Colapsável) -->
+        <div id="testBugListContainer" style="display: none; margin-top: 8px; max-height: 160px; overflow-y: auto;">
+          <div id="testBugListItems" style="font-size: 11.5px;"></div>
+          <div style="margin-top: 8px; display: flex; justify-content: space-between; gap: 6px;">
+            <button type="button" class="btn btn-sm btn-outline" style="font-size: 10.5px;" onclick="exportarRelatorioBugs()">
+              <i data-lucide="download"></i> Baixar Relatório (.TXT)
+            </button>
+            <button type="button" class="btn btn-sm btn-outline" style="font-size: 10.5px; color: var(--accent-rose);" onclick="limparBugsSessao()">
+              Limpar Notas
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Seção de Conclusão / Avaliação (Aparece ao terminar) -->
+      <div id="testCompletionSection" style="display: none; background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 8px; padding: 12px;">
+        <div style="font-size: 13px; font-weight: 700; color: var(--accent-emerald); display: flex; align-items: center; gap: 6px;">
+          <i data-lucide="award"></i> Roteiro Concluído!
+        </div>
+        <div style="margin-top: 8px;">
+          <label style="font-size: 11px; color: var(--text-muted);">Como foi a facilidade do teste?</label>
+          <select id="testRatingSelect" class="select-control" style="width: 100%; margin-top: 2px;">
+            <option value="5">⭐⭐⭐⭐⭐ 5 - Muito Fácil</option>
+            <option value="4">⭐⭐⭐⭐ 4 - Fácil</option>
+            <option value="3">⭐⭐⭐ 3 - Médio</option>
+            <option value="2">⭐⭐ 2 - Difícil</option>
+            <option value="1">⭐ 1 - Com Dificuldade</option>
+          </select>
+        </div>
+        <div style="margin-top: 8px;">
+          <input type="text" id="testNotesInput" class="form-control" placeholder="Anotações do usuário...">
+        </div>
+        <button type="button" class="btn btn-sm btn-primary" style="margin-top: 8px; width: 100%;" onclick="nextScenarioOrFinish()">
+          Salvar Avaliação & Próximo Roteiro ➔
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: REGISTRO DE BUG / OBSERVAÇÃO (ACESSO RÁPIDO) -->
+  <div class="modal-overlay" id="modalBugNote">
+    <div class="modal-container" style="max-width: 520px;">
+      <div class="modal-header">
+        <div class="modal-title"><i data-lucide="bug" style="color: #f43f5e;"></i> Registrar Bug ou Observação do Teste</div>
+        <button class="modal-close" onclick="closeBugNoteModal()"><i data-lucide="x"></i></button>
+      </div>
+      <form id="formBugModal" onsubmit="saveModalBugNote(event)">
+        <div class="modal-body">
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Tipo de Registro:</label>
+              <select id="modalBugType" class="form-control" required>
+                <option value="bug">🐛 Bug / Erro de Sistema</option>
+                <option value="idea">💡 Ideia de Melhoria / Sugestão</option>
+                <option value="doubt">⚠️ Dúvida / Hesitação do Usuário</option>
+                <option value="praise">⭐ Ponto Forte / Elogio</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Gravidade / Impacto:</label>
+              <select id="modalBugSeverity" class="form-control" required>
+                <option value="media">Média</option>
+                <option value="alta">Alta (Bloqueia o uso)</option>
+                <option value="baixa">Baixa (Visual / Cosmético)</option>
+              </select>
+            </div>
+            <div class="form-group col-span-2">
+              <label>Tela / Módulo Atual:</label>
+              <input type="text" id="modalBugModule" class="form-control" readonly style="background: rgba(0,0,0,0.2);">
+            </div>
+            <div class="form-group col-span-2">
+              <label>Descrição do que aconteceu / o que o testador falou:</label>
+              <textarea id="modalBugText" class="form-control" placeholder="ex: O usuário não achou o botão de imprimir ou o cálculo de peso deu valor diferente..." required rows="3"></textarea>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" onclick="closeBugNoteModal()">Cancelar</button>
+          <button type="submit" class="btn btn-danger"><i data-lucide="save"></i> Salvar no Diário de Testes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- NOTIFICAÇÕES TOAST -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Script da Aplicação -->
+  <script src="app.js"></script>
+</body>
+</html>

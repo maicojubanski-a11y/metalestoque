@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="MetalEstoque PRO: controle operacional de almoxarifado para caldeirarias, usinagens e fabricantes sob encomenda.">
+  <title>MetalEstoque PRO — Do retalho à OP</title>
+  <style>
+    :root {
+      --bg: #08111f;
+      --panel: #0f1d31;
+      --panel-2: #142640;
+      --text: #edf5ff;
+      --muted: #9bb0c8;
+      --line: rgba(157, 185, 214, .18);
+      --cyan: #21d4fd;
+      --amber: #fbbf24;
+      --green: #34d399;
+      --rose: #fb7185;
+      --shadow: 0 24px 70px rgba(0, 0, 0, .32);
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 15% 0%, rgba(33, 212, 253, .13), transparent 35rem),
+        radial-gradient(circle at 90% 10%, rgba(251, 191, 36, .10), transparent 28rem),
+        var(--bg);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.55;
+    }
+    a { color: inherit; }
+    .wrap { width: min(1120px, calc(100% - 40px)); margin: 0 auto; }
+    .topbar {
+      position: sticky; top: 0; z-index: 10;
+      backdrop-filter: blur(16px);
+      background: rgba(8, 17, 31, .82);
+      border-bottom: 1px solid var(--line);
+    }
+    .nav { min-height: 72px; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+    .brand { display: flex; align-items: center; gap: 11px; text-decoration: none; font-weight: 900; letter-spacing: -.02em; }
+    .brand-mark { display: grid; place-items: center; width: 38px; height: 38px; border-radius: 12px; color: #03111d; background: linear-gradient(135deg, var(--cyan), #75f0ff); box-shadow: 0 8px 24px rgba(33, 212, 253, .25); }
+    .brand small { display: block; color: var(--muted); font-size: 10px; letter-spacing: .16em; }
+    .navlinks { display: flex; align-items: center; gap: 22px; color: var(--muted); font-size: 14px; }
+    .navlinks a { text-decoration: none; }
+    .navlinks a:hover { color: var(--text); }
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 0 18px; border: 1px solid transparent; border-radius: 10px; text-decoration: none; font-weight: 800; font-size: 14px; cursor: pointer; transition: transform .18s ease, box-shadow .18s ease, background .18s ease; }
+    .btn:hover { transform: translateY(-2px); }
+    .btn-primary { color: #03111d; background: linear-gradient(135deg, var(--cyan), #a6f7ff); box-shadow: 0 10px 28px rgba(33, 212, 253, .20); }
+    .btn-secondary { color: var(--text); border-color: var(--line); background: rgba(255,255,255,.04); }
+    .hero { padding: 92px 0 72px; }
+    .hero-grid { display: grid; grid-template-columns: 1.1fr .9fr; align-items: center; gap: 64px; }
+    .eyebrow { display: inline-flex; align-items: center; gap: 8px; padding: 7px 11px; color: #a8f5ff; background: rgba(33, 212, 253, .09); border: 1px solid rgba(33, 212, 253, .25); border-radius: 999px; font-size: 12px; font-weight: 800; letter-spacing: .05em; text-transform: uppercase; }
+    h1 { margin: 18px 0 18px; max-width: 720px; font-size: clamp(42px, 6vw, 72px); line-height: 1.02; letter-spacing: -.065em; }
+    .hero h1 span { color: var(--cyan); }
+    .lead { max-width: 640px; margin: 0; color: var(--muted); font-size: clamp(17px, 2vw, 21px); }
+    .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 30px; }
+    .proof { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 24px; color: var(--muted); font-size: 12px; }
+    .proof span { padding: 7px 10px; border: 1px solid var(--line); border-radius: 8px; background: rgba(255,255,255,.035); }
+    .hero-card { padding: 24px; border: 1px solid var(--line); border-radius: 20px; background: linear-gradient(160deg, rgba(20,38,64,.92), rgba(15,29,49,.86)); box-shadow: var(--shadow); }
+    .hero-card-head { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-bottom: 18px; border-bottom: 1px solid var(--line); }
+    .status { display: inline-flex; align-items: center; gap: 7px; color: #9ff6ca; font-size: 12px; font-weight: 800; }
+    .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); box-shadow: 0 0 0 5px rgba(52,211,153,.12); }
+    .mini-kpis { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 18px; }
+    .kpi { padding: 15px; border: 1px solid var(--line); border-radius: 12px; background: rgba(255,255,255,.035); }
+    .kpi strong { display: block; font-size: 24px; }
+    .kpi small { color: var(--muted); }
+    .spark { display: flex; align-items: end; gap: 7px; height: 72px; margin-top: 22px; padding: 10px 0 0; border-top: 1px solid var(--line); }
+    .spark i { flex: 1; min-height: 12px; border-radius: 5px 5px 2px 2px; background: linear-gradient(180deg, var(--cyan), rgba(33,212,253,.15)); }
+    section { padding: 78px 0; }
+    .section-head { max-width: 720px; margin-bottom: 30px; }
+    .section-head h2 { margin: 0 0 10px; font-size: clamp(30px, 4vw, 46px); line-height: 1.05; letter-spacing: -.045em; }
+    .section-head p { margin: 0; color: var(--muted); font-size: 17px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .card { padding: 24px; border: 1px solid var(--line); border-radius: 16px; background: rgba(15,29,49,.72); }
+    .card h3 { margin: 12px 0 8px; font-size: 19px; }
+    .card p { margin: 0; color: var(--muted); }
+    .icon { display: grid; place-items: center; width: 42px; height: 42px; border-radius: 12px; font-size: 22px; background: rgba(33,212,253,.10); border: 1px solid rgba(33,212,253,.20); }
+    .flow { counter-reset: flow; }
+    .flow .card { position: relative; padding-top: 58px; }
+    .flow .card::before { counter-increment: flow; content: "0" counter(flow); position: absolute; top: 20px; left: 24px; color: var(--cyan); font-weight: 900; letter-spacing: .08em; }
+    .split { display: grid; grid-template-columns: .9fr 1.1fr; gap: 24px; align-items: stretch; }
+    .metric-panel { padding: 30px; border: 1px solid rgba(52,211,153,.28); border-radius: 18px; background: linear-gradient(150deg, rgba(52,211,153,.11), rgba(15,29,49,.82)); }
+    .metric-panel h3 { margin: 0 0 12px; font-size: 24px; }
+    .metric-list { display: grid; gap: 12px; margin: 20px 0 0; padding: 0; list-style: none; }
+    .metric-list li { display: flex; gap: 10px; color: var(--muted); }
+    .metric-list b { color: var(--green); }
+    .pricing { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; align-items: stretch; }
+    .price-card { position: relative; padding: 26px; border: 1px solid var(--line); border-radius: 17px; background: rgba(15,29,49,.78); }
+    .price-card.featured { border-color: rgba(33,212,253,.58); box-shadow: 0 16px 50px rgba(33,212,253,.12); }
+    .ribbon { position: absolute; top: 14px; right: 14px; padding: 5px 8px; color: #03111d; border-radius: 6px; background: var(--cyan); font-size: 10px; font-weight: 900; text-transform: uppercase; }
+    .price-card h3 { margin: 0; font-size: 20px; }
+    .price { margin: 16px 0 5px; font-size: 30px; font-weight: 900; letter-spacing: -.04em; }
+    .price small { color: var(--muted); font-size: 13px; font-weight: 500; }
+    .price-card p { min-height: 48px; margin: 0; color: var(--muted); font-size: 14px; }
+    .price-card ul { display: grid; gap: 9px; min-height: 122px; margin: 20px 0; padding: 0; color: var(--muted); list-style: none; font-size: 14px; }
+    .price-card li::before { content: "✓"; margin-right: 8px; color: var(--green); font-weight: 900; }
+    .honesty { margin-top: 22px; padding: 16px 18px; border-left: 3px solid var(--amber); color: #d9e5f2; background: rgba(251,191,36,.08); border-radius: 0 10px 10px 0; }
+    .honesty b { color: var(--amber); }
+    .contact { display: grid; grid-template-columns: .85fr 1.15fr; gap: 22px; }
+    .contact-copy { padding: 30px; border-radius: 18px; background: linear-gradient(145deg, rgba(33,212,253,.12), rgba(15,29,49,.78)); border: 1px solid rgba(33,212,253,.22); }
+    .contact-copy h2 { margin-top: 0; font-size: 34px; line-height: 1.06; letter-spacing: -.045em; }
+    .contact-copy p { color: var(--muted); }
+    form { display: grid; gap: 13px; padding: 26px; border: 1px solid var(--line); border-radius: 18px; background: rgba(15,29,49,.72); }
+    .form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 13px; }
+    label { display: grid; gap: 6px; color: #c9d8e8; font-size: 12px; font-weight: 800; }
+    input, textarea { width: 100%; padding: 12px 13px; color: var(--text); border: 1px solid var(--line); border-radius: 9px; outline: none; background: rgba(8,17,31,.72); font: inherit; }
+    input:focus, textarea:focus { border-color: var(--cyan); box-shadow: 0 0 0 3px rgba(33,212,253,.10); }
+    textarea { min-height: 105px; resize: vertical; }
+    .form-note { margin: 0; color: var(--muted); font-size: 12px; }
+    #leadStatus { min-height: 22px; margin: 0; color: var(--green); font-size: 13px; font-weight: 700; }
+    footer { padding: 28px 0 38px; border-top: 1px solid var(--line); color: var(--muted); font-size: 13px; }
+    .footer-row { display: flex; align-items: center; justify-content: space-between; gap: 18px; }
+    @media (max-width: 820px) {
+      .navlinks { display: none; }
+      .hero { padding-top: 58px; }
+      .hero-grid, .split, .contact { grid-template-columns: 1fr; gap: 28px; }
+      .grid-3, .pricing { grid-template-columns: 1fr; }
+      .price-card p, .price-card ul { min-height: auto; }
+    }
+    @media (max-width: 520px) {
+      .wrap { width: min(100% - 26px, 1120px); }
+      .nav .btn { padding: 0 12px; font-size: 12px; }
+      h1 { font-size: 45px; }
+      .form-grid { grid-template-columns: 1fr; }
+      .footer-row { align-items: flex-start; flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="wrap nav">
+      <a class="brand" href="#top" aria-label="MetalEstoque PRO">
+        <span class="brand-mark">⚒</span>
+        <span>MetalEstoque <small>PRO INDUSTRIAL</small></span>
+      </a>
+      <nav class="navlinks" aria-label="Navegação principal">
+        <a href="#fluxos">Como funciona</a>
+        <a href="#oferta">Oferta</a>
+        <a href="#piloto">Piloto</a>
+      </nav>
+      <a class="btn btn-primary" href="#piloto">Validar na minha fábrica</a>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="wrap hero-grid">
+        <div>
+          <span class="eyebrow">Controle operacional para metalmecânicas</span>
+          <h1>Do <span>retalho</span> à OP, transforme aço parado em produção rastreável.</h1>
+          <p class="lead">O MetalEstoque PRO ajuda caldeirarias, usinagens e fabricantes sob encomenda a localizar materiais, reaproveitar sobras e baixar a BOM antes que a planilha vire desperdício ou parada.</p>
+          <div class="actions">
+            <a class="btn btn-primary" href="#piloto">Quero testar em uma célula</a>
+            <a class="btn btn-secondary" href="index.html">Abrir demonstração local ↗</a>
+          </div>
+          <div class="proof" aria-label="Características do produto">
+            <span>Importação CSV</span><span>Chapas, barras e consumíveis</span><span>Operação local</span>
+          </div>
+        </div>
+        <div class="hero-card" aria-label="Prévia dos indicadores">
+          <div class="hero-card-head"><strong>Visão da fábrica</strong><span class="status"><i class="dot"></i> operação ativa</span></div>
+          <div class="mini-kpis">
+            <div class="kpi"><strong>17</strong><small>itens monitorados</small></div>
+            <div class="kpi"><strong>R$ 86k</strong><small>capital visível</small></div>
+            <div class="kpi"><strong>03</strong><small>sobras disponíveis</small></div>
+            <div class="kpi"><strong>02</strong><small>OPs acompanhadas</small></div>
+          </div>
+          <div class="spark" aria-hidden="true"><i style="height: 28%"></i><i style="height: 42%"></i><i style="height: 35%"></i><i style="height: 62%"></i><i style="height: 54%"></i><i style="height: 78%"></i><i style="height: 93%"></i></div>
+          <small style="color: var(--muted)">Demonstração ilustrativa — substitua pelos dados da sua fábrica no piloto.</small>
+        </div>
+      </div>
+    </section>
+
+    <section id="problemas">
+      <div class="wrap">
+        <div class="section-head"><h2>O dinheiro some nos detalhes do chão de fábrica.</h2><p>O produto começa onde o ERP genérico e a planilha normalmente deixam lacunas.</p></div>
+        <div class="grid-3">
+          <article class="card"><div class="icon">📍</div><h3>Material que ninguém encontra</h3><p>Localização, dimensão, corrida e saldo ficam dispersos. O almoxarife perde tempo enquanto a produção espera.</p></article>
+          <article class="card"><div class="icon">✂️</div><h3>Retalho que vira sucata</h3><p>Sobras úteis não aparecem na requisição seguinte. O mesmo aço é comprado e cortado novamente.</p></article>
+          <article class="card"><div class="icon">🧾</div><h3>Compra e OP sem confiança</h3><p>O comprador descobre o estoque crítico tarde e a produção baixa materiais sem uma visão clara da BOM.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section id="fluxos">
+      <div class="wrap">
+        <div class="section-head"><h2>Uma operação curta, quatro ganhos visíveis.</h2><p>Na demonstração, usamos os dados e os problemas do prospect — não um tour genérico de funcionalidades.</p></div>
+        <div class="grid-3 flow">
+          <article class="card"><h3>Importe e encontre</h3><p>Traga o catálogo do Excel, pesquise por SKU, corrida, dimensão ou localização e pare de procurar em várias abas.</p></article>
+          <article class="card"><h3>Receba e rastreie</h3><p>Registre NF, fornecedor e corrida no recebimento para recuperar a evidência quando o cliente ou a qualidade pedir.</p></article>
+          <article class="card"><h3>Reaproveite e produza</h3><p>Consulte o pátio de sobras, monte a BOM e faça a baixa da OP com saldo e custo direto dos materiais.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section id="resultado">
+      <div class="wrap split">
+        <div class="metric-panel"><h3>O piloto mede dinheiro, não vaidade.</h3><p style="color: var(--muted); margin: 0">Antes de começar, registramos o baseline da célula escolhida e comparamos o resultado após 30 dias.</p><ul class="metric-list"><li><b>→</b> tempo para localizar e baixar material</li><li><b>→</b> acuracidade do inventário físico</li><li><b>→</b> kg/R$ de retalho reaproveitado</li><li><b>→</b> horas de compras e inventário</li><li><b>→</b> movimentos registrados e rupturas</li></ul></div>
+        <div class="card"><h3>O que significa sucesso?</h3><p>O champion executa os fluxos sem ajuda, a célula registra seus movimentos e o gerente consegue enxergar pelo menos um ganho operacional ou financeiro verificável.</p><div class="honesty"><b>Sem promessa escondida:</b> a versão atual é local-first e single-user por origem. O piloto começa em uma estação/base controlada; sincronização multiusuário e integrações entram somente com demanda e validação.</div></div>
+      </div>
+    </section>
+
+    <section id="oferta">
+      <div class="wrap">
+        <div class="section-head"><h2>Comece pequeno. Expanda quando o resultado aparecer.</h2><p>Preços de validação para uma planta; não são uma promessa definitiva antes dos primeiros pilotos.</p></div>
+        <div class="pricing">
+          <article class="price-card featured"><span class="ribbon">primeiro passo</span><h3>Piloto validado</h3><div class="price">R$ 3.900 <small>/ 30 dias</small></div><p>Uma célula, catálogo de até 3.000 SKUs e acompanhamento próximo.</p><ul><li>Diagnóstico e baseline</li><li>Importação e treinamento</li><li>Roteiros de uso acompanhados</li><li>Relatório antes/depois</li></ul><a class="btn btn-primary" href="#piloto">Solicitar piloto</a></article>
+          <article class="price-card"><h3>Base Almoxarifado</h3><div class="price">R$ 1.490 <small>/ mês</small></div><p>Para organizar catálogo, localização, inventário e movimentações.</p><ul><li>Implantação: R$ 6.000</li><li>Importação e backup</li><li>Compras e etiquetas</li><li>Uma planta</li></ul><a class="btn btn-secondary" href="#piloto">Conversar sobre base</a></article>
+          <article class="price-card"><h3>Pro Caldeiraria/OP</h3><div class="price">R$ 2.490 <small>/ mês</small></div><p>Para conectar retalho, BOM, OP, corrida e compras.</p><ul><li>Implantação: R$ 12.000</li><li>Todos os recursos Base</li><li>Retalhos e baixa de OP</li><li>Indicadores de operação</li></ul><a class="btn btn-secondary" href="#piloto">Conversar sobre Pro</a></article>
+        </div>
+      </div>
+    </section>
+
+    <section id="piloto">
+      <div class="wrap contact">
+        <div class="contact-copy"><span class="eyebrow">Próximo passo</span><h2>Vamos medir uma célula da sua fábrica?</h2><p>Preencha o contexto. O botão prepara uma mensagem pronta para colar no WhatsApp, e-mail ou CRM — sem enviar nada automaticamente.</p><p><strong>Ideal para:</strong> caldeirarias, corte plasma/laser, usinagens e fabricantes sob encomenda com uma planta.</p><div class="actions"><a class="btn btn-secondary" href="index.html">Ver a demonstração do produto ↗</a><a class="btn btn-secondary" href="pilot-scorecard.html">Abrir scorecard do piloto ↗</a><a class="btn btn-secondary" href="pipeline-pilotos.html">Abrir pipeline ↗</a><a class="btn btn-secondary" href="proposta-piloto.html">Gerar proposta ↗</a></div></div>
+        <form id="leadForm">
+          <div class="form-grid"><label>Seu nome<input id="leadName" required autocomplete="name" placeholder="Ex.: Roberto Silva"></label><label>Empresa<input id="leadCompany" required autocomplete="organization" placeholder="Ex.: Caldeiraria Aliança"></label></div>
+          <div class="form-grid"><label>Cargo / função<input id="leadRole" required placeholder="Ex.: gerente industrial"></label><label>Cidade / UF<input id="leadCity" placeholder="Ex.: Joinville / SC"></label></div>
+          <label>Qual é o maior problema hoje?<textarea id="leadPain" required placeholder="Ex.: não encontramos retalhos e fazemos compras emergenciais..."></textarea></label>
+          <button class="btn btn-primary" type="submit">Copiar mensagem de contato</button>
+          <p class="form-note">A mensagem não é enviada automaticamente. Ela fica pronta para você colar no canal comercial que preferir.</p>
+          <p id="leadStatus" role="status" aria-live="polite"></p>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer><div class="wrap footer-row"><span>MetalEstoque PRO · controle operacional para metalmecânicas</span><a href="#top">Voltar ao topo ↑</a></div></footer>
+  <script>
+    document.getElementById("leadForm").addEventListener("submit", async function (event) {
+      event.preventDefault();
+      const name = document.getElementById("leadName").value.trim();
+      const company = document.getElementById("leadCompany").value.trim();
+      const role = document.getElementById("leadRole").value.trim();
+      const city = document.getElementById("leadCity").value.trim();
+      const pain = document.getElementById("leadPain").value.trim();
+      const message = [
+        "Olá! Quero conversar sobre o piloto do MetalEstoque PRO.",
+        "Nome: " + name,
+        "Empresa: " + company,
+        "Cargo: " + role,
+        "Cidade/UF: " + (city || "não informado"),
+        "Dor principal: " + pain,
+        "Interesse: piloto de 30 dias para uma célula da fábrica."
+      ].join("\n");
+      const status = document.getElementById("leadStatus");
+      try {
+        await navigator.clipboard.writeText(message);
+        status.textContent = "Mensagem copiada. Cole-a no WhatsApp, e-mail ou CRM.";
+      } catch (error) {
+        window.prompt("Copie a mensagem abaixo:", message);
+        status.textContent = "A mensagem foi aberta para cópia manual.";
+      }
+    });
+  </script>
+</body>
+</html>
